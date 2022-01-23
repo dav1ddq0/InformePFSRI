@@ -22,7 +22,7 @@
 
          % for the preliminaries
 %
-\title{Diseño, implementación, evaliación y añálisis de un Sistem de Recuperación de Información para la búsqueda de distintos formatos de documentos de texto}
+\title{Diseño, implementación, evaluación y añálisis de un Sistem de Recuperación de Información}
 \author{David Orlando De Quesada Oliva, Javier Dom\'inguez}
 \institute{MATCOM, Universidad de La Habana.\\
 \email{d.quesada@estudiantes.matcom.uh.cu, j.dominguez@estudiantes.matcom.uh.cu}\\
@@ -32,7 +32,7 @@
 
 \begin{abstract}
     
-    Este paper aborda sobre la implementación de un Sistema de Recuperación de Información usando 
+    Este art\'iculo aborda sobre la implementación de un Sistema de Recuperación de Información usando 
     el modelo vectorial y el modelo fuzzy para la recuperación de documentos de texto de diversos 
     formatos.
 
@@ -42,45 +42,55 @@
 \tableofcontents
 %
 
-  
-          % start of the contributions
+% start of the contributions
 
+\chapter*{Dise\~no}
+\addcontentsline{toc}{chapter}{Dise\~no}
+El sistema está diseñado, primero que todo, para pre-procesar los documentos que están en este.
+Este pre-procesamiento consiste en: \\
 
+\noindent $\bullet$ Remover los stopwords (preposiciones, conjunciones y artículos). \\
+$\bullet$ Remover los signos de puntuación.\\
+$\bullet$ Remover los números.\\
+$\bullet$ Llevar todas las palabras a minúscula.\\
+$\bullet$ Stemming (llevar cada palabra a su palabra raíz).\\
+$\bullet$ Separar por palabras el documento (tokenizar).\\
 
-\chapter*{Caracter\'isticas del problema}
-\addcontentsline{toc}{chapter}{Caracter\'isticas del problema}
-La Recuperación de im\'agenes es el campo que se encarga de buscar y obtener imágenes 
-digitales de una base  de datos. Debido a la cantidad creciente de imágenes digitales 
-alrededor del mundo, desde 1970 este campo ha estado bien activo. Un sistema de 
-recuperación efectivo y rápido de imágenes necesita operar sobre una colección de 
-imágenes y devolver las imágenes relevantes basadas en la consulta, la cual 
-se realiza lo más cercana posible a la percepción humana. Los investigadores de este 
-campo poco a poco, han ido mejorando e implementando varios tipos de sistemas de recuperación 
-de imágenes, de los sistemas basados en \textbf{palabras claves}, pasando por los sistemas 
-basados en el contenido (características) de una imagen, y finalmente llegando a los 
-sistemas de recuperación semánticos, con el objetivo de reducir el vacío semántico que 
-existe entre la representación de características de bajo nivel (color, textura, forma, etc) y 
-la semántica de alto nivel en las imágenes.
+Los primeros 4 procesos en la implementación son modficables, o sea, es posible decidir si aplicarlos o no.\\
 
-Desarrollar un motor de búsqueda de imágenes omnipotente, capaz de satisfacer a todos los usuarios 
-requiere entender y caracterizar la interacción y la búsqueda de imágenes desde el punto de vista 
-del usuario y del sistema. Desde el punto de vista del usuario, claridad en lo que desea, donde lo 
-quiere buscar y de que forma quiere realizar su consulta. Desde el punto de viste del motor de 
-búsqueda, como desea el usuario que le sean presentados los resultados de su consulta, dónde desea 
-buscar el usuario y cual es la naturaleza de la consulta del usuario.
+\chapter*{Herramientas usadas para el el desarrollo del sistema}
+\addcontentsline{toc}{chapter}{Herramientas usadas para el el desarrollo del sistema}
 
+Para el desarrollo del sistema usamos Python como lenguaje de programación. Librerías de Python
+que utilizamos:\\
 
-\chapter*{Diferencias entre Image Retrieval y Content-based image retrieval}
-\addcontentsline{toc}{chapter}{Diferencias entre Image Retrieval y Content-based image retrieval}
+\noindent $\bullet$ nltk, para los stopwords, stemming y lemmatizing. \\
+$\bullet$ streamlit para la interfaz gráfica. \\
+$\bullet$ pdfminer y fpdf para procesar archivos .pdf.\\
 
+Para correr la aplicación: {\bf streamlit run main.py} \\
 
+Luego del pre-procesamiento es posible realizar las querys al sistema mediante la interfaz gráfica de dos formas,
+mediante texto, o mediante otro documento como se muestra en las imágenes siguientes:
 
-La recuperación de imágenes (Image Retrieval) se refiere a la rama de la recuperación de información que se encarga 
-de dada una consulta que puede realizar un usuario de disímiles formas, devolver un ranking de las imágenes que más 
-se asemejen a la consulta hecha por el usuario, teniendo en cuenta alguna medida de similitud. La recuperación de 
-imágenes basada en contenido(Content-based image retrieval) se refiere a un tipo específico de método de recuperación de 
-imágenes que se  caracteriza por usar el contenido de las imágenes (color, forma, textura, etc) para realizar el proceso 
-de consulta.
+\begin{figure}[h]
+    \includegraphics[scale = 0.3]{images/main_screen.png}
+\end{figure}
+
+\begin{figure}[h]
+    \includegraphics[scale = 0.3]{images/main_upload_file.png}
+\end{figure}
+
+\newpage
+Es posible escoger que formato de documento es el que se desea buscar:
+
+\begin{figure}[h]
+    \includegraphics[scale = 0.8]{images/doc_format.png}
+\end{figure}
+
+Es posible escoger solamente los 10 elementos más relevantes de la query:\\
+
+\includegraphics[scale = 0.7]{images/top_10.png}
 
 % \newpage
 \chapter*{Principales m\'etodos para la recuperaci\'on de im\'agenes}

@@ -17,6 +17,7 @@
 \usepackage[rightcaption]{sidecap}
 \setcounter{tocdepth}{2}
 \usepackage{hyperref}
+\usepackage{pythonhighlight}
 
 \begin{document}
 
@@ -96,26 +97,194 @@ Es posible escoger solamente los 10 elementos más relevantes de la query:\\
 \chapter*{Principales m\'etodos para la recuperaci\'on de im\'agenes}
 \addcontentsline{toc}{chapter}{Principales m\'etodos para la recuperaci\'on de im\'agenes}
 
-\section{Keyword Based Image Retrieval:}
+\section{Preprocesamiento del texto:}
 
-En un \textbf{image retrieval system convencional}, los \textbf{keywords} son 
-usados como descriptores para indexar y recuperar una imagen.  Las palabras 
-claves (key words) no transmiten mejor que el contenido de una imagen 
-el significado de esta. Antes de que las imágenes sean almacenadas en la base de datos, son examinadas 
-manualmente y se les asigna una palabra  clave (\textbf{keyword}) para describir su 
-contenido. Estos  keywords  son almacenados como parte de los atributos 
-asociados a la imagen. En el proceso de hacer una consulta, el sistema 
-aceptará del usuario una o varias \textbf{keywords} que serán el criterio de búsqueda.
-Luego se realiza un proceso para encontrar las imágenes que cumplen con el criterio 
-de búsqueda. Las t\'ecnicas de text based image retrieval usan texto para describir el 
-contenido de una imagen lo que a menudo crea ambig$\ddot{u}$edad e insuficiencia en el 
-procesamiento de la query y el rendimiento en una b\'usqueda de la base de datos de 
-im\'agenes. El proceso de asignaci\'on de meta datos con captions o keywords a una imagen
-digital es conocido como anotaci\'on autom\'atica de im\'agenes(automatic image anotation).
-Este tipo de text based informacion retrieval est\'a motivado l\'exicamente en lugar de 
-conceptualmente, lo que lleva a resultados de b\'usqueda irrelevantes en la recuperaci\'on en la 
-recuperaci\'on de informaci\'on.
+Siempre que tengamos datos textuales, debemos aplicar varios pasos de preprocesamiento a los 
+datos para transformar palabras en tokens que permitan un mejor resultado del modelo.
+En el sistema de recuperación de información que se implementó es posible aplicar 
+los siguientes pasos de preprocesamiento del texto. La implementación de los mismo está en 
+el file \textbf{text processing.py}. En muchos pasos hacemos uso de la librería NLTK (Natural Language Toolkit)
+de Python.
 \\
+
+\noindent
+\textbf{Llevar el texto a minúsculas:}
+Se lleva todo el texto a minúsculas para reducir el tama\~{n}o del vocabulario de nuestro texto.
+
+\noindent
+\textbf{Implementación hecha en Python:}
+\begin{python}
+    def text_to_lowercase(text: str):
+        return text.lower()
+\end{python}
+
+\noindent
+\textbf{Remover números:}\\
+Podemos remover los números o convertir los números en sus representaciones textuales. 
+
+\noindent
+\textbf{Implementación hecha en Python haciendo uso de expresiones regulares para eliminar los números:}
+\begin{python}
+    import re
+    def remove_numbers(text):
+        return re.sub(r'\d+', '', text)
+\end{python}
+
+\noindent
+\textbf{Implementación hecha en Python parar convertir los números a sus expresiones textuales haciendo uso de la libería inflect:}
+\begin{python}
+    import inflect
+    def convert_numbers_into_words(text: str)-> str:
+        result = []
+        for word in text.split(): 
+            if word.isdigit(): 
+                result.append((inflect_engine.number_to_words(word)))
+            else:
+                result.append(word)
+
+        return ' '.join(result)
+\end{python}
+
+
+\noindent
+\textbf{Remover los signos de puntuación:}\\ 
+\noindent
+Eliminamos los signos de puntuación para no tener diferentes formas de la misma palabra. 
+Si no eliminamos los signos de puntuación, entonces  por ejemplo \textbf{call.} \textbf{call!} 
+\textbf{,call}  serán tratados por separado cuando deberían referirse a la misma palabra.
+\\
+\textbf{Implementación hecha en Python parar remover los signos de puntuación:}
+\begin{python}
+    def remove_punctuation_marks(text: str):
+        translator = str.maketrans('', '', string.punctuation)
+        return text.translate(translator)
+\end{python}
+
+\noindent
+\textbf{Remover los stopwords:}\\ 
+\noindent
+Los stopwords son palabras que no contribuyen al significado de una oración. Por tanto
+pueden eliminarse con seguridad sin causar algún cambio en el significado de la oración.
+La biblioteca NLTK tiene un conjunto de stopwords y podemos usarlas para eliminar 
+los stopwords de nuestro texto y devolver una lista de tokens de palabras. 
+
+\begin{SCfigure}[0.6]
+    \caption{Lista de stopwords de NLTK}
+    \includegraphics[scale = .3]{./images/englis_stopwords_nltk.png}
+\end{SCfigure}
+
+\noindent
+\textbf{Implementación hecha en Python para el proceso de eliminar los stopwords}
+
+\begin{python}
+    from nltk.corpus import stopwords
+    def text_remove_stopword(text: str):
+        stop_words = set(stopwords.words("english"))  
+        return ' '.join([word for word in text_tokenize(text) if word not in stop_words])
+    
+\end{python}
+
+\noindent
+\textbf{Stemming:}\\ 
+\noindent
+El stemming es el proceso mediante el cual se obtiene la raíz gramatical de una palabra. 
+Stem es la parte a la que se le añaden los afijos flexivos (-ed, -ize, -de, -s, etc. En el caso del idioma inglés)
+El stem de una palabra es creado removiendo el prefijo o sufijo de la palabra. Por lo que el proceso
+de stemming de una palabra puede no resultar en palabras gramaticalmentes correctas del idioma
+
+\begin{SCfigure}[0.6]
+    
+    \includegraphics[scale = .3]{./images/stemming1png.png}
+    \includegraphics[scale = .7]{./images/stemming2png.png}
+    \caption{Ejemplos del proceso de stemming en algunas palabras}
+\end{SCfigure}
+
+Hay principalmente 3 algoritmos para hacer stemming \textbf{Porter Stemming}, 
+\textbf{ Snowball Stemmer} y el \textbf{Lancaster Stemmer}. El Porter Stemming 
+es el más usado entre ellos.
+\\\\
+\textbf{Implementación hecha en Python para hacer el proceso de stemming. Se puede pasar como parámetro un string que indica con cual de los tres algoritmos se quiere hacer stemming.}
+
+\begin{python}
+    from nltk.stem.porter import PorterStemmer
+    from nltk.stem.snowball import SnowballStemmer
+    from nltk.stem.lancaster import LancasterStemmer
+
+    porter_stemmer =  PorterStemmer()
+    snowball_stemmer = SnowballStemmer(language='english')
+    lancaster_stemmer = LancasterStemmer()
+\end{python}
+
+
+\begin{python}
+    def text_stem_words(text: str, stemmer: str):
+        if text == 'porter':
+            stemmer = porter_stemmer
+        elif text == 'snowball':
+            stemmer = snowball_stemmer
+        else:
+            stemmer = lancaster_stemmer
+
+        stems = [stemmer.stem(word) for word in text_tokenize(text)]
+        return ' '.join(stems)
+\end{python}
+
+\noindent
+\textbf{Lemmatizing:}\\
+Como el stemming, el proceso de lemmatizing también convierte una palabra
+a su raíz gramatical. La única diferencia es que el lemmatizing asegura que
+la raíz gramatical de la palabra pertenezca al lenguaje. Obtenemos palabras
+válidas si usamos el lemmatizing. En \textbf{NLTK}, podemos hacer uso del 
+\textbf{WordNetLemmatizer} para obtener los lemmas de las palabras. 
+
+\noindent
+\textbf{Implementación en Python para el proceso de lemmatizing usando el WordNet de NLTK}
+
+\begin{python}
+from nltk.stem import WordNetLemmatizer
+lemmatizer = WordNetLemmatizer()
+def text_lemmatize_words(text: str):
+lemmas = [lemmatizer.lemmatize(word, pos ='v') for word in text_tokenize(text)]
+return ' '.join(lemmas)
+\end{python}
+
+\noindent
+\textbf{Separar el texto en tokens:}\\
+El último paso que hacemos siempre (este paso es necesario) 
+es separar el texto en una lista de tokens de palabras 
+removiendo los espacios. Para eso hacemos uso del word tokenize 
+de NLTK.
+\\\\
+\noindent
+\textbf{Implementación en Python para separar el texto en tokens}
+
+\begin{python}
+from nltk.tokenize import word_tokenize
+def text_tokenize(text: str):
+    tokens = word_tokenize(text)
+    return tokens
+\end{python}
+\noindent
+De la forma en que está hecho el código se le puede pasar uno o varios pasos de preprocesamiento 
+al texto según se requiera. 
+\\
+\begin{python}
+def text_preprocessing(*, text: str, 
+    lowercase: bool = False, 
+    remove_numbers: bool = False,
+    convert_numbers: bool = False,
+    remove_punctuation: bool = False,
+    stopwords: bool = False,
+    stem: str = None,
+    lemmatize: bool = False):
+    ...
+\end{python}
+El método recibe un texto y se le pasan en True los parámetros con los que
+se quiere filtrar el mismo. En el caso del parámetro stem se le pasa un string 
+que indica con cual de los algoritmos se va a hacer el stemming. 
+
+
+
 % \begin{SCfigure}[0.5]
 %     \caption{Proceso general de un keyword based image retrieval}
 %     \includegraphics[scale = .3]{./images/kbir-process.png}

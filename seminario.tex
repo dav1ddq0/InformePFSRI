@@ -23,7 +23,7 @@
 
          % for the preliminaries
 %
-\title{Diseño, implementación, evaluación y añálisis de un Sistem de Recuperación de Información}
+\title{Diseño, implementación, evaluación y añálisis de un Sistema de Recuperación de Información para recuperar documentos PDF y txt}
 \author{David Orlando De Quesada Oliva, Javier Dom\'inguez}
 \institute{MATCOM, Universidad de La Habana.\\
 \email{d.quesada@estudiantes.matcom.uh.cu, j.dominguez@estudiantes.matcom.uh.cu}\\
@@ -33,11 +33,12 @@
 
 \begin{abstract}
     
-    Este art\'iculo aborda sobre la implementación de un Sistema de Recuperación de Información usando 
-    el modelo vectorial y el modelo fuzzy para la recuperación de documentos de texto de diversos 
-    formatos.
-
-   \keywords{pdf, txt, idf, tf, peso, nltk, fuzzy, vectorial}
+    Este art\'iculo aborda sobre la implementación de un Sistema de Recuperación de Información para la recuperación 
+    de documentos de texto en distintos formatos. Se aborda los distintos pasos para el preprocesamiento del texto 
+    y las consultas, la realización y explicación de los modelos usados, la evaluación usando el modelo principal 
+    y la presentanción de una interfaz de usuario para la realización de las consultas.
+    
+   \keywords{pdf, txt, idf, tf, peso, nltk, fuzzy, vectorial, preprocesado, peso}
 \end{abstract}
 
 \tableofcontents
@@ -45,57 +46,28 @@
 
 % start of the contributions
 
-\chapter*{Dise\~no}
-\addcontentsline{toc}{chapter}{Dise\~no}
-El sistema está diseñado, primero que todo, para pre-procesar los documentos que están en este.
-Este pre-procesamiento consiste en: \\
 
-\noindent $\bullet$ Remover los stopwords (preposiciones, conjunciones y artículos). \\
-$\bullet$ Remover los signos de puntuación.\\
-$\bullet$ Remover los números.\\
-$\bullet$ Llevar todas las palabras a minúscula.\\
-$\bullet$ Stemming (llevar cada palabra a su palabra raíz).\\
-$\bullet$ Separar por palabras el documento (tokenizar).\\
-
-Los primeros 4 procesos en la implementación son modficables, o sea, es posible decidir si aplicarlos o no.\\
-
-\chapter*{Herramientas usadas para el el desarrollo del sistema}
+\chapter*{Herramientas empleadas en el desarrollo del sistema}
 \addcontentsline{toc}{chapter}{Herramientas usadas para el el desarrollo del sistema}
 
-Para el desarrollo del sistema usamos Python como lenguaje de programación. Librerías de Python
-que utilizamos:\\
+Para el desarrollo del sistema usamos Python como lenguaje de programación.\\ 
+Librerías de Python que utilizamos:\\
 
 \noindent $\bullet$ nltk, para los stopwords, stemming y lemmatizing. \\
 $\bullet$ streamlit para la interfaz gráfica. \\
 $\bullet$ pdfminer y fpdf para procesar archivos .pdf.\\
+$\bullet$ inflect para convertir números a sus representaciones textuales\\
+$\bullet$ streamlit para la interfaz gráfica \\
+$\bullet$ pandas para trabajar con dataframe \\\\
+Para correr la aplicación escriba en consola: \\\\
+\begin{python}
+    streamlit run main.py
+\end{python}
 
-Para correr la aplicación: {\bf streamlit run main.py} \\
-
-Luego del pre-procesamiento es posible realizar las querys al sistema mediante la interfaz gráfica de dos formas,
-mediante texto, o mediante otro documento como se muestra en las imágenes siguientes:
-
-\begin{figure}[h]
-    \includegraphics[scale = 0.3]{images/main_screen.png}
-\end{figure}
-
-\begin{figure}[h]
-    \includegraphics[scale = 0.3]{images/main_upload_file.png}
-\end{figure}
-
-\newpage
-Es posible escoger que formato de documento es el que se desea buscar:
-
-\begin{figure}[h]
-    \includegraphics[scale = 0.8]{images/doc_format.png}
-\end{figure}
-
-Es posible escoger solamente los 10 elementos más relevantes de la query:\\
-
-\includegraphics[scale = 0.7]{images/top_10.png}
 
 % \newpage
-\chapter*{Proceso para la creación de un sistema de recuperación de información}
-\addcontentsline{toc}{chapter}{Proceso para la creación de un sistema de recuperación de información}
+\chapter*{Proceso para la creación de un sistema de recuperación de información de documentos}
+\addcontentsline{toc}{chapter}{Proceso para la creación de un sistema de recuperación de información de documentos}
 
 \section{Preprocesamiento del texto:}
 
@@ -352,8 +324,24 @@ handler =  Retrieval_handler(system_docs_preprocess_required=True,
 
 En caso que sea False el handler internamente cargará los files pickle correspondientes.
 
+\section{Tokenización de la query}:
+Similar a como se realiza con los documentos existentes en el corpus el texto de una query
+se procesa aplicado los filtros visto anteriormente y te quedas al final con la lista 
+de tokens que representan las palabras significativas de la mismas.  Los términos 
+que esta lista de tokens que no estén en el vocabulario se eliminan de la misma.
 
-\section{Modelo vectorial:}
+\begin{python}
+def remove_terms_not_appear(q_terms, terms):
+    result = []
+    for t in q_terms:
+        if t in terms:
+            result.append(t)
+    return result
+...
+\end{python}
+
+\section{Aplicación del modelo}
+\subsection{Modelo vectorial:}
 El modelo principal que usamos para el sistema de recuperación de información fue el vectorial.
 Este modelo representa los documentos como vectores en un espacio vectorial común, donde cada 
 dimensión corresponde a un término independiente. \\
@@ -599,7 +587,7 @@ Teoricamente asume que los términos son estáticamente independientes\\
 $\bullet$
 El orden en que los términos aparecen en el documento se pierde en la representación en el espacio vectorial
 
-\section{Modelo Fuzzy:}
+\subsection{Modelo Fuzzy:}
 Se implementó como modelo secundario para tener la opción de elegir si se quería probar con el mismo. 
 
 El modelo fuzzy es una extensión del modelo booleano. En este modelo cada término de la query es 
@@ -721,7 +709,25 @@ final se hace un ranking por relevancia bastante similar a como es con el vector
 También se puede considerar un umbral de similitud y quedarte solamente con los resultados
 por encima de dicho umbral.
 
-\section{Evaluación del Modelo Vectorial:}
+
+\section{Obtención de resultados de la búsqueda:}
+
+Para buscar los resultados cada clase que representa los 2 modelos empleados tiene un 
+método que se llama $get\_search\_results$ que es al que se llama una vez obtenido el texto 
+de lo que escribió el usuario en la componente gráfica que tiene para escribir texto.
+
+\begin{python}
+def get_search_results(self,*, query: str,
+    filters: List[str],
+    top10: bool = False):
+    ....
+\end{python}
+
+Según lo que se le pase en el parámetroo filters devolvera solo los documentos que cumplan 
+con el  o los tipos de documentos  especificados, si se le pasa top10 en True solo 
+devuelve los 10 primeros resultados del ranking.
+
+
 
 
 \section{Interfaz gráfica y como puede buscar las consultas el usuario:}
@@ -731,102 +737,99 @@ crear aplicaciones de interfaz web desde Python. En el file $UI\_streamlit.py$
 está el código de la parte gráfico del sistema de recuperación de información 
 desarrollado.
 
+\begin{SCfigure}[0.5]
+    \caption{Interfaz para hacer búsquedas}
+    \includegraphics[scale = .28]{./images/ui_tex_search.png}
+    \includegraphics[scale = .28]{./images/ui_uploadsearch.png}
+\end{SCfigure}
+
+\noindent
+Como se puede observar se pueden hacer búsquedas tanto escribiendo directamente 
+lo que se quiere buscar en la barra de búsqueda así como arrastrando o subiendo 
+un file de documento en los posibles formatos aceptados(PDF y TXT).
+
+
+\begin{SCfigure}[0.5]
+    \caption{Si no se encuentra ningún resultado a la búsqueda}
+    \includegraphics[scale = .28]{./images/ui_notfouund.png}
+\end{SCfigure}
+
+En caso que se encuentren resultados a la búsqueda del usuario 
+se visualizará para cada documento el nombre del documento 
+una imagen que identifica el tipo de documento que es y un botón
+para descargar el archivo si se quiere. Además se pueden filtrar 
+los resultados por solo un tipo (PDF, txt, text plane) o poniendo 
+que solo te quieres quedar con los 10 primeros resultados (Top10).
+
+
+\begin{SCfigure}[0.5]
+    \includegraphics[scale = .28]{./images/ui_search_result.png}
+    \includegraphics[scale = .28]{./images/ui_tex_download.png}
+    \includegraphics[scale = .28]{./images/file_downloaded.png}
+\end{SCfigure}
+
+\begin{SCfigure}[0.5]
+    \caption{Solo Top10}
+    \includegraphics[scale = .28]{./images/top_10_sear.png}
+    \includegraphics[scale = .28]{./images/top_10.png}
+    \includegraphics[scale = .28]{./images/top10_2.png}
+\end{SCfigure}
+
+
+\begin{SCfigure}[0.5]
+    \caption{Solo PDF}
+    \includegraphics[scale = .28]{./images/only_pdf.png}
+\end{SCfigure}
+
+\begin{SCfigure}[0.5]
+    \caption{Solo txt}
+    \includegraphics[scale = .28]{./images/onlytxt.png}
+\end{SCfigure}
+
+\chapter*{Evaluación del Sistema:}
+\addcontentsline{toc}{chapter}{Evaluación del Sistema}
+
+La evaluación del sistema la hicimos usando el modelo principal (el vectorial) pues el cálculo 
+de la matriz de correlación término a término y el grado de pertenencia del fuzzu era muy 
+costoso de computar con los corpus que probamos.\\
+
+\noindent
+Para la evaluación del sistema utilizamos tres colecciones de prueba:\\\\
+
+\noindent
+$\bullet$ \textbf{Cranfield} que tiene 1400 documentos y 225 querys de prueba\\
+$\bullet$ \textbf{Medline} una colección de artículos de una revista médica que contiene 1033 documentos y 30 querys de prueba\\ 
+$\bullet$ \textbf{Time} una colección de artículos de la revista Time que contiene 423 documentos y 83 querys de pruba.\\
+
+\noindent
+Las pruebas se realizaron con un umbral $> 0$.\\
+Las medidas de evaluación que se emplearon fueron la precisión, el recobrado(recall), la medida F1,
+el fallout, la r-precisión para 10 y el r-fallout para 10.\\
+Para cada colección de prueba se calculó el promedio de las medidas menciandas con todas las querys
+Los resultados obtenidos fuerons los siguientes:\\\
+
+\begin{SCfigure}[0.5]
+    \includegraphics[scale = .7]{./images/umbrarl_ma0.png}
+\end{SCfigure}
+
+
+Como se puede observar en los resultados la precisión fue bastante baja pero tuvo un recobrado bastante
+alto. Por tanto a pesar de que se recuperaron muchos documentos irrelevantes, la mayoría de los documentos 
+relevantes fueron recuperados. Como el fallout da bastante elevado se recuperó un gran número de documentos 
+irrelevantes.
 
 
 
-% El campo de la recuperación de imágenes ha demostrado ser uno necesario para los tiempos en que vivimos, donde tantas imágenes 
-% se generan diariamente, desde satélites orbitando la Tierra, misiones espaciales en lo más lejos del cosmos, 
-% animales en la naturaleza, paisajes, cámaras de seguridad y mucho más. Las imágenes son una fuente de información 
-% muy útil en la actualidad, y por tanto almacenarlas y organizarlas es una tarea necesaria, para facilitar 
-% el acceso a la información. De ahí que este campo tenga una gran cantidad de aplicaciones en la actualidad, 
-% a continuación mencionamos algunas de las más importantes:
-% \\\\
-% \noindent $\blacksquare$ \textbf{El problema de la anotación automática de imágenes.}\\
-% El propósito principal de un sistema de recuperación de imágenes basado en contenido es descubrir imágenes que pertenecen a algún 
-% concepto, en la ausencia de meta-datos, todos los intentos de automatizar el proceso de creación de estos meta-datos tiene ese 
-% objetivo. La anotación de imágenes puede facilitar la búsqueda de imágenes utilizando texto. Si el mapeo resultante imagen-palabras 
-% clave es confiable, la búsqueda de imagen basada en texto puede tener semánticamente más sentido que buscar en la ausencia de texto. 
-% Uno de los métodos para resolver este problema de la anotación automática es usar aprendizaje supervisado para categorizar las 
-% imágenes. La detección de conceptos simples como: paisaje, ciudad, animales, etc, alcanza una alta precisión.
-% \\\\
-% \noindent $\blacksquare$El arte y la cultura siempre han sido importantes en la vida del ser humano. A lo largo de la historia, los museos y galerías 
-% de arte del mundo se han encargado de preservar nuestra diversa herencia cultural para utilizarlos como fuentes educación y 
-% aprendizaje. Es por esto que recientemente se ha expresado la preocupación por digitalizar todos los materiales antiguos, 
-% históricos y culturales, para la posteridad. Esto es muy importante por dos razones, primero las computadoras se han convertido 
-% en el principal medio de aprendizaje y se supone que así sea durante los próximos años, por tanto la representación digital de 
-% los artefactos culturales y las imágenes es algo que facilitará su popularidad, además de que sería accesible desde cualquier 
-% rincón del mundo, y segundo al contrario de la información almacenada de forma digital, los artefactos y pinturas antiguas están a 
-% merced a la degradación con el paso del tiempo, a los desastres y al vandalismo.
-% \\\\
-% \noindent $\blacksquare$ Las interacciones entre CBIR y la seguridad de la información ha sido prácticamente nulo, hasta que recientemente ciertas perspectivas 
-% han emergido  para unir ambos campos, las pruebas de interacción humana (HIPs por sus siglas en inglés) y el cumplimiento de 
-% la protección de los derechos de autor. Mientras por un lado constantemente estamos ampliando las fronteras de la ciencia para 
-% diseñar sistemas que pueda imitar las capacidades humanas, no podemos negar los riesgos de seguridad inherentes asociados con 
-% programas extremadamente "inteligentes". Uno de dichos riesgos es cuando un sitio web o algún servidor es atacado por programas 
-% maliciosos que solicitan servicios a escalas masivas. Pueden ser escritos programas que consuman una gran cantidad de recursos web o 
-% que influyan en los resultados de votaciones. En este caso los HIPs también conocidos como CAPTCHAs, son la solución. Estas interfaces 
-% están diseñadas para diferenciar entre humanos o programas, basados en la respuesta a algunas preguntas.
-
-% \noindent $\blacksquare$ \textbf{Aplicaciones en la medicina} :
-% Una apliaci\'on que recupera cortes de 2D MRI(im\'agenes de resonancia magn\'etica)
-% de vol\'umenes cerebrales en 3D. La aplicaci\'on aceptar\'ia query de im\'agenens 2D MRI del usuario e identificar\'ia el volumen 3D que coincide
-% de acuerdo con la  regi\'on del cerebro relacionada con la query. Los cortes coincidentes se recuperadan mediante una b\'usqueda adicional en los vol\'umenes
-% 3D coincidentes.
-
-% \noindent $\blacksquare$ \textbf{Aplicaciones en el comercio electr\'onico} :
-% La compra electr\'onica es la tendencia actual en el mundo m\'as que compras tradicionales debido a la conveniencia de internet. Cuando llega 
-% el tiempo de la compra, los usuarios se encuentran con un problema en seleccionar los items que necesitan comprar. Un sistema de recuperaci\'on
-% de im\'agenes puede asistir a la decisiones del usuario en ropa y ayudarlo a tener una mejor selecci\'on de ropa durante la compra electr\'onica.
-% El m\'etodo usado enriquece la b\'usqueda y recuperaci\'on de productos de informaci\'on usando CBIR con caracter\'isticas como el color o la textura 
-% en la aplicaci\'on de la venta minorista de ropa electr\'onica.  
-
-% % \newpage
-
-% \chapter*{Ventajas y desventajas}
-% \addcontentsline{toc}{chapter}{Ventajas y desventajas}
-
-% \underline {\bf Keyword Based Image Retrieval}\\
-
-% Ventajas:\\
-% \noindent$\bullet$ La realizaci\'on de queries mediante texto suele ser m\'as intuitiva y f\'acil para los usuarios.\\
-
-% Desventajas:\\
-% \noindent$\bullet$ No tiene en cuenta conceptos sem\'anticos.\\
-% $\bullet$ Solo usando texto para describir el contenido de una imagen a menudo causa ambig\"{u}edad e insuficiencia en el rendimiento
-% de la b\'usqueda de im\'agenes en una base de datos y el procesamiento de las queries de los usuarios.\\
-
-% \underline {\bf Content Based Image Retrieval}\\
-
-% Ventajas:\\
-% \noindent$\bullet $ Las queries se pueden realizar utilizando alguna imagen en algunos casos.\\
-% $\bullet $ Se computan las caracter\'isticas de bajo nivel para lograr una mayor precisi\'on a la hora de responder a una 
-% query.\\
-
-% Desventajas:\\
-% \noindent$\bullet$ Los sistemas basados en esta t\'ecnica sufren de lo que se denomina brecha sem\'antica. Es una brecha 
-% entre los complejos conceptos sem\'anticos que puede percibir el ser humano, y que las m\'aquinas no son capaces de
-% comprender f\'acilmente.\\
-
-% \underline {\bf Semantic Based Image Retrieval}\\\\
-
-% Ventajas:\\
-% \noindent$\bullet$ Es capaz de utilizando herramientas de machine learning lograr una mayor precisi\'on a la hora de representar conceptos sem\'anticos.\\
-
-% Desventajas:\\
-% $\bullet$ A pesar de que estos sistemas son mucho mejores que los existentes tiempo atr\'as, a\'un no existen mecanismos lo suficientemente potentes.\\
-
-% \underline {\bf Ontology Based Image Retrieval}\\\\
-
-% Ventajas:\\
-% \noindent$\bullet$ Usando la representaci\'on ontol\'ogica  de im\'agenes se puede interpretar las ideas de alto nivel de la mente del usuario.
-
-
-
-% Desventajas:\\
-% $\bullet$
-% Si se define una ontolog\'ia compleja el proceso de anotaci\'on tambi\'en ser\'a complejo. El modelo de dominio ontol\'ogico es tan bueno 
-% como la mano experta que decide la ontolog\'ia.
-
+\chapter*{Algunos consideraciones para mejorar el sistema implementado:}
+\addcontentsline{toc}{chapter}{Algunos consideraciones para mejorar el sistema implementado}
+Se puede agregar más formatos parar procesar desde documentos word, powerpoint,
+html,epub  asi como procesar imágenes que contengas texto. Se podría tener coincidencias 
+de palabras  que fuesen sinónimos y hacer tener búsquedas más cercanas a lo que desee el usuario.
+Además agregar nuevas funcionalidades a la interfaz de usuario como mostrar un preview del documento 
+sin tener que descargarlo o tener autocompletamiento en la búsqueda por texto matcheando con los 
+términos que están en el vocabulario y se acerquen a lo que el usuario está buscando. También se 
+podríá agregar alguna forma de analizar el contexto de lo que se habla en el documento o asignar 
+tags para tenerlos separados por temáticas por ejemplo.
 \newpage
 
 \chapter*{}
@@ -834,47 +837,20 @@ desarrollado.
 \begin{thebibliography}{}
     %
     \bibitem[1]{2clar:eke}
-    Ritika Hirwane(2012).
-    Fundamental of Content Based ImageRetrieval.
-    (IJCSIT) International Journal of Computer Science and Information Technologies, Vol. 3 (1)
+    Cristopher D. Manning, Prabhakar Raghavan, Hinrich Schutze (2009).
+    An introduction to Information Retrieval.
     
     \bibitem[2]{2clar:eke:2}
-    Hui Hui Wang, Dzulkifli Mohamad, N.A. Ismail(2010).
-    Approaches, Challenges and Future Direction
-    of Image Retrieval.
-    Journal of Computing, Volume 2, Issue 6
-    
-    \bibitem[3]{2mich:tar}
-    Chandra Mouli P.V.S.S.R.,Mohd Khalid
-    Vijayan Vijayarajan(2012).
-    A review: from keyword based image retrieval to ontology 
-    based image retrieval.International Journal of Reviews in Computing  
-    
-    \bibitem[4]{2tar}
-    John Eakins,Margaret Graham(1999).
-    Content-based Image Retrieval.
-    JISC Technology Applications Programme (October 1999)
+    Baeza-Yates(2002).
+    Modern Information Retrieval 
 
-    
-    \bibitem[5]{2rab}
-    Yu Xiaohong, Xu Jinhua(2008)
-    The Related Techniques of Content-based Image Retrieval.
-    2008 International Symposium on Computer Science and Computational Technology
-    
-    \bibitem[6]{2rab}
-    Elsaeed E. AbdElrazek(2017).
-    A Comparative Study of Image Retrieval Algorithms for
-    Enhancing a Content-based Image Retrieval System.
-    Global Journals  of Computer Science and Technology:Inc Volume 17 Issue 3 Version 1.0
-
-    \bibitem[7]{2rab}
-    Abby A. Goodrum(2000).
-    Image Information Retrieval: An Overview of Current Research.
-    College of Information Science and Technology Drexel University.
-
-    \bibitem[8]{2rab}
-    Unknown Author(2021,November 26).
-    Image retrieval.Wikipedia.\url{https://en.wikipedia.org/wiki/Image_retrieval}.
+   
+    \bibitem[3]{2rab}
+    Unknown Author.
+    Documentación de Streamlit.Streamlit.\url{https://docs.streamlit.io/}.
+    \bibitem[4]{2rab}
+    Unknown Author.
+    Documentación de NLTK\url{ https://www.nltk.org/}.
     
 \end{thebibliography}
 

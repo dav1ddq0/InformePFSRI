@@ -160,22 +160,10 @@ INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmti10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr12.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
 OUTPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/seminario.toc
-INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm
-INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/images/main_screen.png
-INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/images/main_screen.png
-INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/images/main_screen.png
-INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/images/main_upload_file.png
-INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/images/main_upload_file.png
-INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/images/main_upload_file.png
-INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/images/doc_format.png
-INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/images/doc_format.png
-INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/images/doc_format.png
-INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/images/top_10.png
-INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/images/top_10.png
-INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/images/top_10.png
 INPUT /usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmtt10.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm
 INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/./images/englis_stopwords_nltk.png
 INPUT ./images/englis_stopwords_nltk.png
 INPUT ./images/englis_stopwords_nltk.png
@@ -189,6 +177,42 @@ INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmsltt10.tfm
 INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/./images/ejemplosim.png
 INPUT ./images/ejemplosim.png
 INPUT ./images/ejemplosim.png
+INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/./images/ui_tex_search.png
+INPUT ./images/ui_tex_search.png
+INPUT ./images/ui_tex_search.png
+INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/./images/ui_uploadsearch.png
+INPUT ./images/ui_uploadsearch.png
+INPUT ./images/ui_uploadsearch.png
+INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/./images/ui_notfouund.png
+INPUT ./images/ui_notfouund.png
+INPUT ./images/ui_notfouund.png
+INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/./images/ui_search_result.png
+INPUT ./images/ui_search_result.png
+INPUT ./images/ui_search_result.png
+INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/./images/ui_tex_download.png
+INPUT ./images/ui_tex_download.png
+INPUT ./images/ui_tex_download.png
+INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/./images/file_downloaded.png
+INPUT ./images/file_downloaded.png
+INPUT ./images/file_downloaded.png
+INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/./images/top_10_sear.png
+INPUT ./images/top_10_sear.png
+INPUT ./images/top_10_sear.png
+INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/./images/top_10.png
+INPUT ./images/top_10.png
+INPUT ./images/top_10.png
+INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/./images/top10_2.png
+INPUT ./images/top10_2.png
+INPUT ./images/top10_2.png
+INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/./images/only_pdf.png
+INPUT ./images/only_pdf.png
+INPUT ./images/only_pdf.png
+INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/./images/onlytxt.png
+INPUT ./images/onlytxt.png
+INPUT ./images/onlytxt.png
+INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/./images/umbrarl_ma0.png
+INPUT ./images/umbrarl_ma0.png
+INPUT ./images/umbrarl_ma0.png
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr6.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmmi9.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmmi6.tfm

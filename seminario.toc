@@ -1,15 +1,18 @@
-\contentsline {title}{Diseño, implementación, evaluación y añálisis de un Sistem de Recuperación de Información}{1}{chapter.1}%
+\contentsline {title}{Diseño, implementación, evaluación y añálisis de un Sistema de Recuperación de Información para recuperar documentos PDF y txt}{1}{chapter.1}%
 \authcount {1}
 \contentsline {author}{David Orlando De Quesada Oliva, Javier Dom\'inguez}{1}{chapter.1}%
-\contentsline {chapter}{Dise\~no}{3}{chapter*.3}%
-\contentsline {chapter}{Herramientas usadas para el el desarrollo del sistema}{4}{chapter*.4}%
-\contentsline {chapter}{Proceso para la creación de un sistema de recuperación de información}{6}{chapter*.5}%
-\contentsline {section}{\numberline {1}Preprocesamiento del texto:}{6}{section.1.1}%
-\contentsline {section}{\numberline {2}Tokenización de los documentos del sistema y creación del vocabulario de las palabras:}{10}{section.1.2}%
-\contentsline {section}{\numberline {3}Modelo vectorial:}{11}{section.1.3}%
-\contentsline {subsection}{\numberline {3.1}Razones por la que se escogió este modelo como el modelo principal del sistema:}{15}{subsection.1.3.1}%
-\contentsline {subsection}{\numberline {3.2}Limitaciones que tenemos al usar este modelo:}{15}{subsection.1.3.2}%
-\contentsline {section}{\numberline {4}Modelo Fuzzy:}{15}{section.1.4}%
-\contentsline {section}{\numberline {5}Evaluación del Modelo Vectorial:}{18}{section.1.5}%
-\contentsline {section}{\numberline {6}Interfaz gráfica y como puede buscar las consultas el usuario:}{18}{section.1.6}%
-\contentsline {chapter}{References}{19}{chapter*.6}%
+\contentsline {chapter}{Herramientas usadas para el el desarrollo del sistema}{3}{chapter*.3}%
+\contentsline {chapter}{Proceso para la creación de un sistema de recuperación de información de documentos}{4}{chapter*.4}%
+\contentsline {section}{\numberline {1}Preprocesamiento del texto:}{4}{section.1.1}%
+\contentsline {section}{\numberline {2}Tokenización de los documentos del sistema y creación del vocabulario de las palabras:}{8}{section.1.2}%
+\contentsline {section}{\numberline {3}Tokenización de la query}{9}{section.1.3}%
+\contentsline {section}{\numberline {4}Aplicación del modelo}{9}{section.1.4}%
+\contentsline {subsection}{\numberline {4.1}Modelo vectorial:}{9}{subsection.1.4.1}%
+\contentsline {subsection}{\numberline {4.2}Razones por la que se escogió este modelo como el modelo principal del sistema:}{13}{subsection.1.4.2}%
+\contentsline {subsection}{\numberline {4.3}Limitaciones que tenemos al usar este modelo:}{13}{subsection.1.4.3}%
+\contentsline {subsection}{\numberline {4.4}Modelo Fuzzy:}{14}{subsection.1.4.4}%
+\contentsline {section}{\numberline {5}Obtención de resultados de la búsqueda:}{16}{section.1.5}%
+\contentsline {section}{\numberline {6}Interfaz gráfica y como puede buscar las consultas el usuario:}{16}{section.1.6}%
+\contentsline {chapter}{Evaluación del Sistema}{20}{chapter*.5}%
+\contentsline {chapter}{Algunos consideraciones para mejorar el sistema implementado}{21}{chapter*.6}%
+\contentsline {chapter}{References}{22}{chapter*.7}%

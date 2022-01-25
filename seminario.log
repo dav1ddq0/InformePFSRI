@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2021.9.4)  24 JAN 2022 10:02
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2021.9.4)  24 JAN 2022 19:26
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -519,7 +519,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 72--73
 
  []
 
-<images/main_screen.png, id=119, 1445.4pt x 714.41907pt>
+<images/main_screen.png, id=97, 1445.4pt x 714.41907pt>
 File: images/main_screen.png Graphic file (type png)
 <use images/main_screen.png>
 Package pdftex.def Info: images/main_screen.png  used on input line 78.
@@ -529,7 +529,7 @@ Overfull \hbox (86.49982pt too wide) in paragraph at lines 78--79
 [][] 
  []
 
-<images/main_upload_file.png, id=120, 1445.4pt x 706.89093pt>
+<images/main_upload_file.png, id=98, 1445.4pt x 706.89093pt>
 File: images/main_upload_file.png Graphic file (type png)
 <use images/main_upload_file.png>
 Package pdftex.def Info: images/main_upload_file.png  used on input line 82.
@@ -545,7 +545,7 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 [4
 
  </home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/images/main_screen.png (PNG copy)>]
-<images/doc_format.png, id=126, 549.55313pt x 161.85469pt>
+<images/doc_format.png, id=104, 549.55313pt x 161.85469pt>
 File: images/doc_format.png Graphic file (type png)
 <use images/doc_format.png>
 Package pdftex.def Info: images/doc_format.png  used on input line 89.
@@ -560,7 +560,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 92--93
 
  []
 
-<images/top_10.png, id=127, 570.63188pt x 42.1575pt>
+<images/top_10.png, id=105, 570.63188pt x 42.1575pt>
 File: images/top_10.png Graphic file (type png)
 <use images/top_10.png>
 Package pdftex.def Info: images/top_10.png  used on input line 94.
@@ -583,17 +583,17 @@ LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <9> not available
  [6
 
 ]
-<./images/englis_stopwords_nltk.png, id=155, 718.93594pt x 352.31625pt>
+<./images/englis_stopwords_nltk.png, id=132, 718.93594pt x 352.31625pt>
 File: ./images/englis_stopwords_nltk.png Graphic file (type png)
 <use ./images/englis_stopwords_nltk.png>
 Package pdftex.def Info: ./images/englis_stopwords_nltk.png  used on input line 173.
 (pdftex.def)             Requested size: 215.68245pt x 105.69568pt.
-<./images/stemming1png.png, id=156, 296.60812pt x 210.7875pt>
+<./images/stemming1png.png, id=133, 296.60812pt x 210.7875pt>
 File: ./images/stemming1png.png Graphic file (type png)
 <use ./images/stemming1png.png>
 Package pdftex.def Info: ./images/stemming1png.png  used on input line 197.
 (pdftex.def)             Requested size: 88.98311pt x 63.23672pt.
-<./images/stemming2png.png, id=157, 176.91093pt x 83.5622pt>
+<./images/stemming2png.png, id=134, 176.91093pt x 83.5622pt>
 File: ./images/stemming2png.png Graphic file (type png)
 <use ./images/stemming2png.png>
 Package pdftex.def Info: ./images/stemming2png.png  used on input line 198.
@@ -613,201 +613,240 @@ Underfull \hbox (badness 10000) in paragraph at lines 267--271
 
  []
 
-[9] [10] [11]
-Underfull \hbox (badness 10000) in paragraph at lines 379--400
+[9] [10]
+Underfull \hbox (badness 10000) in paragraph at lines 366--401
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 401--407
+Underfull \hbox (badness 10000) in paragraph at lines 366--401
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 408--420
+Underfull \hbox (badness 10000) in paragraph at lines 366--401
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 366--401
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 366--401
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 366--401
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 366--401
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 366--401
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 366--401
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 366--401
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 366--401
+
+ []
+
+
+Overfull \hbox (2.2077pt too wide) in paragraph at lines 402--403
+[][] 
+ []
+
+[11]
+Underfull \hbox (badness 10000) in paragraph at lines 446--451
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 446--451
 
  []
 
 [12]
-Underfull \hbox (badness 10000) in paragraph at lines 421--442
+Underfull \hbox (badness 10000) in paragraph at lines 460--463
 
  []
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [13] [14]
-<./images/visual_idea_ontology.png, id=244, 833.36343pt x 353.06906pt>
-File: ./images/visual_idea_ontology.png Graphic file (type png)
-<use ./images/visual_idea_ontology.png>
-Package pdftex.def Info: ./images/visual_idea_ontology.png  used on input line 476.
-(pdftex.def)             Requested size: 250.01096pt x 105.92152pt.
-<./images/ontolgy-bases-image-retrieval-process.png, id=245, 425.33907pt x 452.4403pt>
-File: ./images/ontolgy-bases-image-retrieval-process.png Graphic file (type png)
-<use ./images/ontolgy-bases-image-retrieval-process.png>
-Package pdftex.def Info: ./images/ontolgy-bases-image-retrieval-process.png  used on input line 483.
-(pdftex.def)             Requested size: 170.1326pt x 180.97292pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 484--484
-\OT1/cmr/m/n/9 de la on-tolog^^S^^Pa
- []
-
-
-Underfull \hbox (badness 1852) in paragraph at lines 484--484
-\OT1/cmr/m/n/9 apli-cada al pro-ceso
- []
-
-
-Underfull \hbox (badness 2662) in paragraph at lines 484--484
-\OT1/cmr/m/n/9 de re-cu-peraci^^Son de
- []
-
-[15 <./images/visual_idea_ontology.png (PNG copy)> <./images/ontolgy-bases-image-retrieval-process.png (PNG copy)>] [16]
-Underfull \hbox (badness 10000) in paragraph at lines 513--519
-
- []
-
-[17
-
-]
-Underfull \hbox (badness 10000) in paragraph at lines 541--573
+Underfull \hbox (badness 10000) in paragraph at lines 460--463
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 541--573
+Underfull \hbox (badness 10000) in paragraph at lines 469--472
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 541--573
+Underfull \hbox (badness 10000) in paragraph at lines 469--472
 
  []
 
 
-Overfull \hbox (21.15373pt too wide) in paragraph at lines 541--573
-\U/msa/m/n/10 ^^D$ \OT1/cmr/m/n/10 Las in-ter-ac-ciones en-tre CBIR y la se-guri-dad de la in-for-maci^^Son ha sido pr^^Sacticamente
- []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [18
-
-] [19]
-Underfull \hbox (badness 10000) in paragraph at lines 592--593
+Underfull \hbox (badness 10000) in paragraph at lines 478--501
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 594--596
+Underfull \hbox (badness 10000) in paragraph at lines 478--501
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 597--601
+Underfull \hbox (badness 10000) in paragraph at lines 478--501
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 602--603
+Underfull \hbox (badness 10000) in paragraph at lines 478--501
+
+ []
+
+[13]
+Underfull \hbox (badness 10000) in paragraph at lines 526--532
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 604--608
+Underfull \hbox (badness 10000) in paragraph at lines 526--532
+
+ []
+
+<./images/ejemplosim.png, id=302, 260.47313pt x 225.09094pt>
+File: ./images/ejemplosim.png Graphic file (type png)
+<use ./images/ejemplosim.png>
+Package pdftex.def Info: ./images/ejemplosim.png  used on input line 535.
+(pdftex.def)             Requested size: 130.23624pt x 112.54518pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 536--536
+[][]\OT1/cmr/bx/n/9 .
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 536--536
+[]|\OT1/cmr/m/n/9 Visualizaci^^Son
+ []
+
+
+Overfull \hbox (33.63986pt too wide) in paragraph at lines 538--543
+[]\OT1/cmr/m/n/10 Para cal-cu-lar la simil-i-tud hace-mos $\OML/cmm/m/it/10 sim[] \OT1/cmr/m/n/10 = \OML/cmm/m/it/10 cos^^R \OT1/cmr/m/n/10 = [] = []$ 
+ []
+
+[14 <./images/ejemplosim.png (PNG copy)>]
+Underfull \hbox (badness 10000) in paragraph at lines 605--614
+
+ []
+
+[15]
+Underfull \hbox (badness 10000) in paragraph at lines 615--635
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 609--613
+Underfull \hbox (badness 10000) in paragraph at lines 615--635
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 614--615
+Underfull \hbox (badness 10000) in paragraph at lines 615--635
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 614--615
+Underfull \hbox (badness 10000) in paragraph at lines 615--635
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 616--618
+Underfull \hbox (badness 10000) in paragraph at lines 615--635
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 619--621
+Underfull \hbox (badness 10000) in paragraph at lines 661--666
+
+ []
+
+[16]
+Underfull \hbox (badness 10000) in paragraph at lines 688--689
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 622--623
+Underfull \hbox (badness 10000) in paragraph at lines 701--704
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 622--623
-
- []
-
-
-Underfull \vbox (badness 3009) has occurred while \output is active []
-
- [20
-
-] [21]
-Underfull \hbox (badness 2680) in paragraph at lines 680--682
+[17] [18]
+Underfull \hbox (badness 2680) in paragraph at lines 876--878
 []\OT1/cmr/m/n/9 Unknown Au-thor(2021,November 26). Im-age re-trieval.Wikipedia.[][]$\OT1/cmtt/m/n/9 https : / / en .
  []
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 687.
-[22
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 883.
+[19
 
 pdfTeX warning (ext4): destination with the same identifier (name{cite.2rab}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.687 \end{document}
+l.883 \end{document}
                     pdfTeX warning (ext4): destination with the same identifier (name{cite.2rab}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.687 \end{document}
+l.883 \end{document}
                     pdfTeX warning (ext4): destination with the same identifier (name{cite.2rab}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.687 \end{document}
+l.883 \end{document}
                     ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 687.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 883.
  (/home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/seminario.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 687.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 687.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 883.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 883.
 Package rerunfilecheck Info: File `seminario.out' has not changed.
-(rerunfilecheck)             Checksum: FF336A9D48DDB8F8C422D8183457627E;1422.
+(rerunfilecheck)             Checksum: EEBB00D92FDB5AC1B3FBD9EB6D70F985;1207.
 
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 687.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 883.
  ) 
 Here is how much of TeX's memory you used:
- 9680 strings out of 481239
- 138045 string characters out of 5920378
- 668711 words of memory out of 5000000
- 24651 multiletter control sequences out of 15000+600000
- 539646 words of font info for 53 fonts, out of 8000000 for 9000
+ 9976 strings out of 481239
+ 142020 string characters out of 5920378
+ 713849 words of memory out of 5000000
+ 24797 multiletter control sequences out of 15000+600000
+ 539815 words of font info for 54 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 34i,7n,50p,524b,1613s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb>
-Output written on "/home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/seminario.pdf" (22 pages, 560684 bytes).
+ 34i,7n,50p,524b,2011s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsltt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb>
+Output written on "/home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/seminario.pdf" (19 pages, 496229 bytes).
 PDF statistics:
- 353 PDF objects out of 1000 (max. 8388607)
- 306 compressed objects within 4 object streams
- 121 named destinations out of 1000 (max. 500000)
- 190 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 536 PDF objects out of 1000 (max. 8388607)
+ 485 compressed objects within 5 object streams
+ 271 named destinations out of 1000 (max. 500000)
+ 145 words of extra memory for PDF output out of 10000 (max. 10000000)
 

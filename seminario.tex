@@ -37,7 +37,7 @@
     el modelo vectorial y el modelo fuzzy para la recuperación de documentos de texto de diversos 
     formatos.
 
-   \keywords{pdf, txt, fuzzy, vectorial}
+   \keywords{pdf, txt, idf, tf, peso, nltk, fuzzy, vectorial}
 \end{abstract}
 
 \tableofcontents
@@ -94,8 +94,8 @@ Es posible escoger solamente los 10 elementos más relevantes de la query:\\
 \includegraphics[scale = 0.7]{images/top_10.png}
 
 % \newpage
-\chapter*{Principales m\'etodos para la recuperaci\'on de im\'agenes}
-\addcontentsline{toc}{chapter}{Principales m\'etodos para la recuperaci\'on de im\'agenes}
+\chapter*{Proceso para la creación de un sistema de recuperación de información}
+\addcontentsline{toc}{chapter}{Proceso para la creación de un sistema de recuperación de información}
 
 \section{Preprocesamiento del texto:}
 
@@ -283,353 +283,549 @@ El método recibe un texto y se le pasan en True los parámetros con los que
 se quiere filtrar el mismo. En el caso del parámetro stem se le pasa un string 
 que indica con cual de los algoritmos se va a hacer el stemming. 
 
+\noindent
+\textbf{Configuración predeterminada empleada:}
+\begin{python}
+def filter_and_tokenize_text(text: str):
+    tokens = text_preprocessing(
+                text=text,
+                lowercase = True,
+                convert_numbers= True,
+                remove_punctuation=True,
+                stopwords=True,
+                lemmatize=True
+
+            )
+
+    return tokens
+\end{python}
+
+\noindent
+Este preprocesado de texto se le hace tanto a los documentos en el sistema como
+a cada query que se procese del usuario.
+
+\section{Tokenización de los documentos del sistema y creación del vocabulario de las palabras:}
+Por defecto todos los documentos que tiene el sistem están en el path:
+\begin{python}
+'.\system_docs'
+\end{python}
+
+Para el preprocesado de los documentos del sistema se va por cada file del path y
+se lee el texto del documento(la forma de leer varía según el formto del mismo, consideramos
+aceptar .txt, pdfs y textos planos sin extensión) contruimos una instancia de Doc con el nombre 
+del documento, el path donde está realmente(útil para cuando el usuario haga la búsqueda
+pueda descargar el documento original), el tipo (TXT, PDF, o Texto Plano son los que consideramos),
+y el texto que al inicializarse se procesa el texto como se explicó  previamente y nos quedamos con una lista 
+de tokens que representan las palabras que tienen significación en ese el texto.
+\begin{python}
+class Doc:
+
+    def __init__(self, name: str, path: str, type: str, text= str):
+        self.name = name
+        self.path = path
+        self.type = type
+        self.terms = filter_and_tokenize_text(text)
+    ...
+\end{python}
+
+Si en el path hay un folder se va recursivo por cada folder y se aplica lo mismo. De esta forma se va
+construyendo una lista de Doc que representan la información necesaria de los documemntos que hay en el 
+sistema. Al mismo tiempo se construye una lista con todos los términos distintos que aparecen en todos 
+los documentos. Hacer estas operaciones son bastante costosas cuando se tienen bastante documentos en 
+el sismtema por lo que se hace solo cuando sea necesario porque se cambió o añadió nuevos documentos.
+Por lo que una vez obtenido las dos listas se serializa y guarda con \textbf{pickle} en los files 
+{documentos.pickel} y \textbf{terms.pickle}. De esta forma no hay que estar generando cada vez sino que
+se lee el archivo.
+
+El código de implementación de este proceso está en 
+\begin{python}
+    system_docs_preprocessing.py
+\end{python}
+
+Para decir que se quiere hacer el preprocesado de los documentos del sistema y generar nuevos files 
+se llama al handler con el parámetro system docs preprocess required en True
+\begin{python}
+handler =  Retrieval_handler(system_docs_preprocess_required=True,
+     model_preprocess_required=True, retrieval_model_used='vectorial')
+    ...
+\end{python}
+
+En caso que sea False el handler internamente cargará los files pickle correspondientes.
 
 
-% \begin{SCfigure}[0.5]
-%     \caption{Proceso general de un keyword based image retrieval}
-%     \includegraphics[scale = .3]{./images/kbir-process.png}
-% \end{SCfigure}
+\section{Modelo vectorial:}
+El modelo principal que usamos para el sistema de recuperación de información fue el vectorial.
+Este modelo representa los documentos como vectores en un espacio vectorial común, donde cada 
+dimensión corresponde a un término independiente. \\
+Por ejemplo: \\
+Sea dj el documento j y i,...t el t-ésimo término entonces el vector del documento j quedaría:\\
+$
+    d_j = (w_{1,j}, w_{2,j}, ..., w_{t,j})
+$
 
-\subsection{Text Based Image Retrieval:}
-
-Las t\'ecnicas b\'asicas de recuperaci\'on de documentos pueden ser usadas para la recuperaci\'on
-de im\'agenes basadas en metadatos sin modificaci\'on. En un keyword based image
-retrieval, los metadatos que describen las im\'agenes pueden ser categorizados en 2
-partes. Una parte se refiere a las herramientas usadas en el proceso de creaci\'on de la imagen, estilo
-de arte de la imagen, artista, precio, y otras propiedades expl\'icitas de la imagen. La otra parte describe
-lo que realmente hay en la imagen, las propiedades impl\'icitas que pueden entenderse al 
-percibir la imagen en si. En el contexto actual de la recuperaci\'on, el texto plano anotado en im\'agenes
-responde de manera similar al texto plano en documentos, debido a que ambos contienen texto, lo cual permite
-que sean explotados por las t\'ecnicas convencionales de text-based information retrieval. La recuperaci\'on de
-informaci\'on basada en texto gen\'erica se realiza de tal manera que inicialmente el usuario reliza una
-consulta(query) que tiene de 1 a m \textbf{keywords}. En los sistemas de recuperaci\'on basados en 
-metadatos(metadata based information retrieval), el buscador compara los keywords con un conjunto de im\'agenes 
-recopiladas de una base de datos y les da prioriad a los valores. Por ejemplo, si el keyword es \textbf{book}, y la 
-imagen A contiene 2 ocurrencias de book y la imagen B solo una ocurrencia, entonces A tiene una prioridad mayor.  Las 
-im\'agenes con palabras claves anotadas son mostradas al usuarios en el orden de reducci\'on de la prioridad. Im\'agenes 
-irrelevantes son recuperadas y el usuario tiene que gastar tiempo en el filtrado de la informaci\'on, usualmente navegando
-a trav\'es de los resultados de b\'usqueda. 
-
-\subsection{Field Based Image Retrieval:}
-Field based retrieval es una extensi\'on del text based retrieval donde solo un campo(field) es usado en anotaci\'on 
-y recuperaci\'on. El enfoque basado en el campo (field based) describe y recupera art\'iculos usando uno o m\'as pares de valores 
-del campo. Regularmente un esquema de metadatos es descrito por un conjunto de campos y pocas indicaciones sobre el tipo de
-valores que pueden ser elegidos por un campo  particular. La plantilla (template) de metadatos y esquemas ampliamente utilizada para 
-describir documentos online en general es la \textbf{Dublin Core(DC)}. Los campos de la DC version 1.1 son rights, coverage, relation,
-language, source, identifier, format, type, data, contributor, publisher, description, subject, creator y title.  Versiones calificadas de 
-DC han sido creadas para dominions particulares como la decripci\'on de piezas de arte en museos.
-
-\subsection{Structure Based Image Retrieval:}
-
-El paradigma de recuperaci\'on basado en estructuras. En este m\'etodo, se utiliza un enfoque basado en el campo(field) que principalmente
-utiliza una estructura de pares de valores atributo. Este m\'etodo permite descripciones m\'as complejas implicando relaciones. Por ejemplo,
-una definici\'on de una parte de un auto puede incluir especificaciones de esos componentes. Cada elemento del objeto se puede especificar 
-de nuevo usando varios atributos como la forma, el tama\~{n}o y el material. Los elementos pueden incluso tener elementos ellos mismos, por 
-ejemplo, una mesa tiene patas, y sus subelementos pueden moverse hasta el nivel donde un elemento no puede obtener un subelemento m\'as particular.
-
-
-\section{Content Based Image Retrieval(CBIR):}
-
-El Content Based Image Retrieval(CBIR) es uno de los m\'etodos de visi\'on por computadoras para la recuperaci\'on de
-im\'agenes, lo que significa que para poder recuperar es necesario im\'agenes digitales de una base de datos de im\'agenes. 
-La b\'usqueda basada en contenido(Content based search) realizar\'a el an\'alisis con el contenido real de la imagen, en 
-lugar de metadatos como etiquetas(tags), palabras clave(keywords), o descripciones anotadas con la imagen. La palabra 
-contenido aqu\'i puede referirse a formas, color, texturas o alg\'un otro detalle que se puede obtener dentro de la propia
-imagen. El motor de búsqueda de imágenes relacionadas con la web se basa en metadatos, por lo que genera una gran cantidad 
-de resultados basura. Por lo tanto CBIR es deseable en este caso. D\'andole palabras clave (keywords) de forma manual a las 
-im\'agenes de b\'usqueda en una larga base de datos se pueden obtener resultados incorrectos. Adem\'as el proceso es costoso y 
-puede que no identifique todas las palabras clave(keywords) que especifican la imagen y, por tanto, es ineficiente. Al 
-proporcionar una buena técnica de indexación basada en el contenido real de las imágenes, se puede recuperar y producir
-resultados precisos.
-% \\
-% \begin{SCfigure}[0.5]
-%     \caption{Arquitectura general de un CBIR}
-%     \includegraphics[scale = .4]{./images/cbir arquitecture.png}
-% \end{SCfigure}
-
-
-\subsection{Low-Level Image Feature:}
-
-Para poder realizar el CBIR las caracter\'istics de bajo nivel de la imagen  (low-level image feature) deben ser extra\'idas 
-primero. La extracci\'on de caracter\'isticas puede hacerse en toda la imagen o solo en una regi\'on de inter\'es. La t\'ecnica
-simple usada en la recuperaci\'on de im\'agenes depende de las caracter\'isticas globales. La percepci\'on humana coincide 
-estrechamente con la representaci\'on de im\'agenes a nivel de regi\'on. Para realizar la recuperaci\'on de im\'agenes 
-basada en regiones el paso m\'as importante es la segmentaci\'on de im\'agenes. De la regi\'on segmentada, las caracter\'isticas 
-de bajo nivel como textura, el color, la forma o la ubicaci\'on espacial se pueden extraer f\'acilmente. Basado en las caracter\'isticas
-de la regi\'on, se puede encontrar f\'acilmente la coincidencia entre dos im\'agenes 
-
-\subsection{ Image Segmentation}
-El proceso autom\'atico de la realizaci\'on de la segmentaci\'on de una imagen es una tarea dif\'icil. Las t\'ecnicas acad\'emicas 
-usadas en la segmentaci\'on de im\'agenes son curva de difusi\'on de energ\'ia(curve energy diffusion), evoluci\'on(evolution) y particionamiento 
-de grafos(graph partitioning). La mayor\'ia de los m\'etodos pueden ser apropiados solo para im\'agenes que tienen regiones con colores
-similares, como los m\'etodos de direct clustering en el espacio de color. Tales m\'etodos pueden adaptarse para la recuperaci\'on de sistemas 
-que funcionen con colores. Pero las escenas naturales contienen tanto colores como texturas. Aplicar segmentaci\'on en texturas resulta 
-dif\'icil. Incluso en la segmentaci\'on basada en texturas la estimaci\'on del par\'ametro del modelo de textura es dif\'icil. Para 
-superar esto el algoritmo 'JSEG' es usado. Otro algoritmo llamado segmentaci\'on Blobworld es ampliamanente utilizado. Algunos algoritmos 
-de segmentaci\'on hacen uso de segmentaci\'on basada en color, en textura o en ambas. Estos algoritmos usan k-means para prop\'ositos de 
-clasificaci\'on. Los bloques de una misma clase se agrupan dentro de una misma regi\'on. El algoritmo k-means con restricci\'on de 
-conectividad (KMCC) es un trabajo de segmentaci\'on para segmentar objetos en las im\'agenes. Esta utilizaci\'on del algoritmo  se basa 
-en la confianza, en la necesidad del sistema y el uso del conjunto de datos. Es dif\'icil determinar que algoritmo proporciona mejores 
-resultados. El resultado del JSEG es la textura y el color de regiones similares, pero el resultado de KMCC produce objetos que son diferentes.
-El algoritmo KMCC es computacionalmente mucho m\'as exhaustivo que el JSEG. Por tanto, Blobworld y JSEG son principalmente los algoritmos usados.
-
-\subsection { Varias caracter\'isticas de bajo nivel de las im\'agenes:}
-
-
-$\blacksquare$  \textbf{Color:} El color es la m\'as com\'un de la caracter\'isticas adoptadas en la recuperaci\'on de im\'agenes. Varios espacios de color son usados 
-para definir colores. Esos espacios de color son usados en dependencia de las diferentes aplicaciones. Los espacios de color 
-m\'as usados son  RGB, LAB, LUV, HSV (HSL), YCrCb, y el hue-min-max-difference (HMMD). La covarianza del color, el histograma 
-de color, y los momentos de color(color moments) son principalmente las caracter\'isticas de color usadas en RBIR(Region Based Image Retrieval).
- El color principal (leading color), el color escalable(scalable color)y el dise\~{n}o de color(color layout) son las caracter\'isticas 
-de color que se utilizan principalmente en MPEG-7. Con el origen las caracter\'isticas de 3 colores, el par matiz-matiz y matiz
-se construyen las invariantes de color. La sem\'antica de alto nivel no est\'a directamente relacionada con las caracter\'isticas 
-de color mencionadas anteriormente. Para mapear los colores de una regi\'on a nombres de colores en sem\'antica de alto nivel,
-el promedio de color de todos los pixeles  en una regi\'on podr\'ia usarse como su caracter\'istica de color. Si la segmentaci\'on
-es err\'onea terminar\'a porque la regi\'on original es visualmente diferente al color promedio. Dependiendo de los resultados 
-de la segmentaci\'on solo se seleccionan las caracter\'isticas de color. El color promedio no es una opci\'on deseable si la
-segmentaci\'on da como resultado objetos que no tienen colores similares. En la mayor\'ia de los trabajos CBIR, las im\'agenes en color no
-est\'an preprocesadas. Los filtros de color adecuados son esenciales para mejorar la eficiencia de recuperaci\'on debido a que el color 
-en la im\'agenes siempre est\'a da\~{n}ado por el ruido.\\
-$\blacksquare$  \textbf{Textura:}
-Pocos sistemas no utilizan la textura como el color en la recuperaci\'on de im\'agenes. La textura es una caracter\'istica importante 
-para describir la sem\'antica de alto nivel en la recuperaci\'on de im\'agenes porque proporciona detalles esenciales en un cat\'alogo 
-de im\'agenes, ya que define el contexto de muchas im\'agenes del mundo real como nubes, ladrillos, \'arboles y telas. El resultado
-de aplicar \textbf{la transformada de Wavelet}    o \textbf{el filtrado de Gabor}, medidas estad\'isticas confinadas asi como las
-seis caracter\'istcas de textura de Samura, son las caracter\'isticas de textura m\'as utilizadas en el proceso de recuperaci\'on de 
-im\'agenes.  Las caracter\'istica de textura de Samura son:\\
-
-\noindent$\blacktriangleright $ La regularidad\\
-$\blacktriangleright $ Semejanza de l\'inea\\
-$\blacktriangleright $ La rugosidad\\
-$\blacktriangleright $ La direccionalidad\\
-$\blacktriangleright $ El contraste\\
-$\blacktriangleright $ La aspereza\\
-
-De estas caracter\'isticas la aspereza, la direccionalidad y la regularidad son las m\'as importantes. Estas tres est\'an relacionadas 
-con otras que son menos eficaces con respecto a la descripci\'on de la textura. Los descriptores de navegaci\'on de texturas son 
-obtenidos desde \textbf{MPEG-7}. Estos son regularidad, aspereza, direccionalidad. Se ha encontrado que la textura de Brodatz funcionar\'a
-de manera excelente con caracter\'isticas de palabras como aleatoriedad, direccionalidad y periodicidad. Las caracter\'isticas de Tamura
-no funcionan para m\'ultiples resoluciones que se consideren para la medici\'on. Las caracter\'isticas globales se ven afectadas por 
-distorsiones de la imagen como diferencias de orientaci\'on debido a la distorsi\'on del punto de vista y la escala. Si las regiones
-de textura en la imagen no est\'an organizadas y son similares, se producir\'ia una respuesta de recuperaci\'on deficiente para im\'agenes
-de escenas naturales. El estudio de la visi\'on humana puede coincidir bastante con las caracter\'isticas de Wavelet y Gabor en la mayor 
-parte de la recuperaci\'on de im\'agenes. Pero el dise\~{n}o actual del filtro de Gabor y la transformada de Wavelet solo est\'a 
-destinado a im\'agenes rectangulares. Pero en un RBIR la regi\'on  de la imagen tiene formas err\'aticas. Por tanto en tal caso las 
-caracter\'isticas de la textura se utilizan eficazmente. Pero para la representaci\'on de im\'agenes naturales el descriptor de histogramas
-de borde (EHD) es el m\'as adecuado y eficaz.\\
-
-$\blacksquare$  \textbf{Forma:}
-Uno de los conceptos m\'as distintivos es la forma. Esta caracter\'istica tiene un l\'imite consecutivo de segmentos, una relaci\'on 
-de aspecto, descriptores de Fourier, circularidad e invariantes de momento. El color y la textura son m\'as \'utiles en im\'agenes 
-particulares de dominio, como objetos artificiales. A\'un asi las caracter\'isticas de la forma son caracter\'isticas esenciales 
-pero no tienen tanta popularidad en los RBIR como las caracter\'isticas de textura y color para explorar los beneficios inherentes de RBIR,
-algunos sistemas podrían utilizar las características de forma como evaluadores. Por ejemplo, las características de orientación 
-y excentricidad se utilizan para este propósito. La forma de una imagen puede definir la configuraci\'on de la superficie, caracter\'isticas
-de un objeto, un contorno. Esto permite distinguir a un objeto de su entorno por su contorno. La representaci\'on de la forma puede 
-generalmente dividirse en dos categor\'ias: basado en los bordes y basados en regiones. La representaci\'on de la forma basada en los 
-bordes solo usa los bordes exteriores de la forma. Esto se hace describiendo la regi\'on considerada usando sus caracter\'isticas externas,
-como los pixeles a lo largo del l\'imite del objeto. Pero la representaci\'on de la forma basada en la regi\'on es totalmente diferente 
-al m\'etodo anterior. Utiliza la regi\'on de forma completa describiendo la regi\'on considerando sus caracter\'isticas internas; es 
-decir los pixeles contenidos en esa regi\'on.\\
+\noindent
+Si aparece un término en el documento, su valor 
+en el vector es distinto de 0. El esquema usado para calcular estos valores se conoce como
+\textbf{tf-idf weighting}. El peso(weight) asociado al par $(t_i, d_j)$ es $>=0$. 
+\\\\
+\noindent
+\textbf{Calculo del peso en los documentos:}\\\\
+\noindent
+El peso del término \textbf{$t_i$} en el documento $d_j$ está dado por:\\
 \\
-$\blacksquare$  \textbf{Localizaci\'on espacial:}
-No solo la textura, el color, o la forma son caracter\'isticas importantes sino tambi\'en la localizaci\'on espacial en la catalogaci\'on 
-de la regi\'on. Por ejemplo una imagen que contenga \'arboles con c\'esped en el suelo podr\'ia tener caracter\'isticas de color y textura 
-similares pero su localizaci\'on espacial ser diferente, normalmente las hojas de los \'arboles aparecen en la parte superior de una imagen,
-mientras que las hojas que caen en la parte inferior. Las ubicaciones espaciales se definen intuitivamente como :\textbf{izquierda(left), derecha(right),
-top(arriba), bottom(abajo)}, seg\'un el lugar de la regi\'on en la imagen. El rect\'angulo delimitador m\'inimo (minimum bounding rectangle) y 
-el centroide de la regi\'on se utilizan para encontrar la ubicaci\'on espacial.     
+$
+    w_{i,j} = tf_{i,j}* idf_i
+$
+\\\\
+El \textbf{idf(inverse document frequency)} de un término i se define:\\
+\\
+$
+    idf_i = log{\frac{N}{n_i}}
+$
+\\\\
+Donde N es la cantidad de documentos existentes en el sistem y $n_i$ la cantidad 
+de documentos en los que aparece el término $t_i$.
+\\\\
+La frecuencia normalizada del término $t_i$ en el documento $d_j$ se define como:
+\noindent\\\\
+$
+    t_{i,j} = \frac{freq_{i,j}}{max_lfreq{l,j}}
+$
+\\\\
+Donde $freq_{i,j}$ es la frecuencia del término $t_i$ en el documento $d_j$ y
+$max_lfreq{l,j}$ la máxima frecuencia que tiene un término l en el documento j.
+\\\\
+\noindent
+\textbf{Para representar este modelo creamos una clase Vectorial} 
+\\
+\begin{python}
+def __init__(self, corpus_term, documents, compute_vectorial_data_required: bool = False):
+    self.a = 0.4 # suavizado
+    self.corpus_terms = corpus_term # list to store the terms present in the documents
+    self.documents = documents # documents of the corpus of the form Doc()
+    if compute_vectorial_data_required:
+        self.compute_docs_vectors()
+    else:
+        self.d_vectors = unpick_pickle_file('./preprocessed/d_vectors.pickle')
+        self.idf = unpick_pickle_file('./preprocessed/idf.pickle')
+    ...
+\end{python}
+\noindent
+la cual se inicializa con el vocabulario y la lista que tiene la representación
+de cada documento del corpus asi como con un parámetro opcional que indica que es necesario
+calcular el vector de cada documento o se lee directo de un file .pickle serializado, 
+esto es debido a que hacer este proceso es extremadamente costoso por lo que se hace previamente
+y solo es necesario volverlo a cambiar si cambia el corpus(se agregan o modifican nuevos documentos).
+\\
+Con el método:
+\begin{python}
+    def compute_docs_vectors(self):
+    ...
+\end{python}
+\noindent
+se calculan el vector de cada documento con el esquema idf-tf para calcular los pesos de
+cada documento con cada término del vocabulario del corpus.
 
-\section{Semantic Based Image Retrieval:}
+\begin{python}
+    N = len(self.documents)
+    len_terms = len(self.corpus_terms)
+    d_vectors = [ len_terms*[0] for _ in range(N) ]
+    tf = [N*[0] for _ in range(len_terms)]
+    idf = len_terms*[0]
+    for doc_id,doc in enumerate(self.documents):
 
-Ni una, ni la combinación de varias características visuales o de bajo nivel (color, textura, forma, relación espacial) pueden capturar 
-completamente los conceptos de alto nivel de las imágenes. Además, debido a que el rendimiento de la recuperación de imágenes basado en 
-características de bajo nivel no es satisfactorio, hay una necesidad de que la investigación vaya dirigida hacia la recuperación de 
-imágenes basada en el significado semántico, tratando de utilizar el concepto cognitivo del ser humano para traducir esas 
-características de bajo nivel a conceptos semánticos de alto nivel (vacío semántico). Este acercamiento permite a los usuarios 
-acceder a imágenes a través de consultas por texto, la cual es más intuitiva, fácil y preferida por los usuarios para expresar 
-su deseo. Como mencionamos previamente en el CBIR, las imágenes pasan por un proceso de extracción de características de bajo nivel que 
-se almacena junto con las imágenes. Ahora aquí, se hace necesario traducir esas características de bajo nivel a conceptos de alto nivel 
-que no es capaz de comprender una máquina. Esta traducción usualmente se lleva a cabo utilizando herramientas de aprendizaje supervisado 
-o no-supervisado, para asociar las características de bajo nivel con conceptos de alto nivel, los cuáles serán apuntados con palabras, 
-durante el proceso de anotación de imágenes.
-Como podemos ver la recuperación de imágenes basada en la semántica utiliza técnicas de los 2 mecanismos que surgieron previamente, 
-la extracción de características de bajo nivel utilizada en CBIR y la anotación de imágenes utilizada en el mecanismo basado en 
-palabras claves, para almacenar en la imagen palabras \textbf{keywords} que se obtengan del proceso de conversión de características de 
-bajo nivel a conceptos de alto nivel propio de este nuevo mecanismo.
-
-\section{Ontology Based Image Retrieval:}
-Ontolog\'ia significa una descripci\'on particular de una conceptualizaci\'on. Dise\~{n}a un dominio de manera formal. Con la ayuda 
-de informaci\'on textual en los alrededores solo la recuperaci\'on de im\'agenes web es lograda. Hay algunos motores de recuperaci\'on 
-de im\'agenes dependientes de texto todav\'ia disponibles en la web como Yahoo y Google. Estos usan caracter\'isticas de texto como 
-los nombres de archivos como \'indices para buscar im\'agenes en la web. Muchos motores de recuperaci\'on de im\'agenes est\'an todav\'ia 
-bajo construcci\'on. Los descriptores de bajo nivel de estos motores est\'an lejos de las nociones sem\'anticas. El otro tipo de sistemas
-solo se basa en anotaciones humanas. Por tanto, es necesario definir y hacer un enfoque intermedio para la compresi\'on de im\'agenes. 
-Algunos sistemas pueden definir un dominio espec\'ifico a partir de un dominio experto  identificando vocabularios utilizados para 
-para describir objetos de inter\'es. La cosa m\'as deseable en la recuperaci\'on de im\'agenes es la ontolog\'ia del concepto visual 
-independiente del dominio. Este tipo de ontolog\'ia admite el reconocimiento autom\'atico basado en t\'ecnicas de procesamiento de 
-im\'agenes.  En esto un dominio espec\'ifico se especifica usando una estructura de \'arbol con herarqu\'ia de clases de sus subelementos 
-en cada nivel.
-
-\begin{SCfigure}[0.5]
-    \caption{Idea visual de la Ontolog\'ia}
-    \includegraphics[scale = .3]{./images/visual_idea_ontology.png}
-\end{SCfigure}
+    if doc.terms: 
+        freq_counter = Counter(doc.terms)
+        max_freq_dj  = freq_counter.most_common(1)[0][1] 
+        for term_id, term in enumerate(self.corpus_terms):
+            freqij = freq_counter[term]
+            tf[term_id][doc_id] = freqij/max_freq_dj 
+    ...
+\end{python}
 
 \noindent
+Primero se computa el tf para cada término del corpus con cada documento y se guarda 
+en una lista tf tal que $tf[t_i][d_j]$ me de el tf del término con posición $t_i$ en la lista
+de términos y del documento con posición $d_j$ en la lista de documentos.
+\\\\
+\begin{python}
+    terms_appear = len_terms*[0] 
+        for term_id, term in enumerate(self.corpus_terms):
+            for doc in self.documents: 
+                if term in doc.terms:
+                    terms_appear[term_id]+=1
+    ...
+\end{python}
 
-\begin{SCfigure}[0.5]
-    \caption{Arquitectura de la ontolog\'ia aplicada al proceso de recuperaci\'on de im\'agenes}
-    \includegraphics[scale = .4]{./images/ontolgy-bases-image-retrieval-process.png}
+Luego calculamos para cada término la cantidad de documentos en los que este aparece y lo guardamos 
+en la lista $terms_appear$
+\\\\
+\begin{python}
+    for term_id,term in enumerate(self.corpus_terms):
+        idf[term_id] =  math.log(N/terms_appear[term_id])
+    ...
+\end{python}
+
+Luego se calcula el idf para cada término usando la lista previamente calculada $terms_appear$ para obtener 
+el $n_i$ de cada término y guardamos el resultado en la lista idf.
+\\\\
+\begin{python}
+    for dj in range(N):
+            for term_id, _ in enumerate(self.corpus_terms):
+                d_vectors[dj][term_id] = tf[term_id][dj] * idf[term_id]
+    ...
+\end{python}
+\noindent
+Luego vamos por cada documento $d_j$ y cada término $t_i$ y se calcula el peso $w_{i,j}$ 
+usando las listas de tf e idf previamente calculadas y finalmente nos queda un vector 
+de cantidad de términos en el vocabulario componentes por cada documento del corpus. 
+\\\\
+Finalmente se serializan la lista de vectores y el idf(necesario para calcular el peso de las query)
+usando pickle y se guarda en los files $d\_vectors.pickle$ y $idf.pickle$
+\\\\
+\noindent
+\textbf{Querys en el modelo vectorial}:\\\\
+Las querys también se representan como un vector q\\
+\noindent
+$
+    q =(w_{1,q}, w_{2,q},...,w_{n,q})
+$
+\noindent
+\\
+El cálculo del peso es bastate similar a como es con los documentos 
+con la diferencia que se introduce una constante de suavizado a.
+\\\\
+$
+    w_{i,q} = (a+(1-a)*\frac{freq_{i,q}}{maxlfreq_{l,q}})
+$
+
+\begin{python}
+    def compute_query_vector(self, query: str):
+    ...
+\end{python}
+
+con este método se computa el vector de una query.
+
+Luego de hacer primero el preprocesado del texto y terner los tokens
+calculamos el peso como se ve a contincuación:
+\begin{python}
+    q_vector = len(self.corpus_terms)*[0]
+    if tokens:
+        freq_counter = Counter(tokens)
+        max_freq_q  = freq_counter.most_common(1)[0][1] 
+        for ti, term in enumerate(self.corpus_terms):
+            freqiq = freq_counter[term] 
+            tf_ti_q = self.a + (1 - self.a)* (freqiq/max_freq_q) 
+            idf_ti = self.idf[ti] 
+            w_iq = tf_ti_q * idf_ti 
+            q_vector[ti] = w_iq
+    return q_vector
+    ...
+\end{python}
+
+La query puede ser vacía(no tener ningún término) en dicho caso el vector sería 0 en cada una de sus componentes.
+\noindent
+\textbf{Cálculo de la similitud:}\\
+El cálculo de similitud entre un documento y la query se hace comparando la desviación de ángulos entre el vector del documento 
+y el vector de la query(la cual tiene dimensión igual a los vectores que representan los otros documentos).
+\\\\
+
+\begin{SCfigure}[0.6]
+    \caption{Visualización con vectores de 2 dimensiones}
+    \includegraphics[scale = .5]{./images/ejemplosim.png}
 \end{SCfigure}
 
-La extracci\'on de imagen hecha por una computadora puede resultar con conceptos de imagen 
-significativos. Estos conceptos puede ser color, textura, forma o localizaci\'on espacial.
-Mapear uno o m\'as de esos conceptos resultantes en ontolog\'ia interpretar\'a el significado 
-conceptual de una imagen. Si la query de recuperaci\'on captura la intenci\'on actual de los
-usuarios a trav\'es de la representaci\'on ontol\'ogica, definitivamente reducir\'a la disparidad 
-sem\'antica entre el hombre y la m\'aquina.   
+Para calcular la similitud hacemos
+$
+    sim_{d_j, q} = cos{\theta}=\frac{d_j*q}{||d_j||||q||} = \frac{\sum_{n = 1}^{N} w_{i,j}w_{i,q} }
+    { \sqrt{\sum_{n = 1}^{N} w_{i,j}^{2} } \sqrt{\sum_{n = 1}^{N} w_{i,q}^{2} }}
+$
 
+Con esto se tiene una ordenación por relevancia(los que tengan mayor similitud) de 
+de los documentos respecto a la query .
+
+\textbf{Implementación realizada en Python para el cálculo de la similitud}
+
+\begin{python}
+    def sim(self, v1: List[float], v2: List[float]) -> float:
+        dotproduct = 0
+        for i in range(len(v1)):
+            dotproduct += v1[i]*v2[i]
+
+        norm1 = 0
+        for i in v1:
+            norm1 += i*i
+        norm1 = math.sqrt(norm1)
+
+        norm2 = 0
+        for i in v2:
+            norm2 += i*i
+        norm2 = math.sqrt(norm2)
+
+        return dotproduct/(norm1*norm2)
+    ....
+\end{python}
+
+
+Se puede establecer un umbral de similitud y quedarnos solamente con los documentos que son mayores 
+que ese umbral.
+
+\subsection {Razones por la que se escogió este modelo como el modelo principal del sistema:}
 \noindent
-
-\section*{?`Cual ser\'ia el mejor m\'etodo?:}
-En un proceso inteligente de recuperaci\'on de im\'agenes, diferentes esquemas de indexaci\'on 
-son aplicados comenzando por el text based, anotaciones de keyword, basada en compos(field based), 
-basado en estructuras, basado en contenido(CBIR), basado en sem\'antica hasta el basado en ontolog\'ia.
-Por tanto la combinaci\'on de varios m\'etodos ser\'ia lo m\'as efectivo si se quiere obtener una respuesta 
-bastante cercana a la query del usuario.
-
-
-
-
-
-
-
-
-\chapter*{Evaluación del sistema}
-\addcontentsline{toc}{chapter}{Evaluación del sistema}
-
-
-La recuperación de imágenes es esencialmente un problema de recuperación de información. Por tanto, 
-las métricas de evaluación han sido adoptados de forma bastante natural a partir de la investigación de 
-recuperación de información. Dos de las las medidas de evaluación más populares son:\\
-$\blacksquare$ Precisión:  n\'umero de im\'agenes relevantes  recuperadas /total de im\'agenes recuperadas.
-.\\
-$\blacksquare$ Recobrado:  n\'umero de im\'agenes relevantes  recuperadas /n\'umero de im\'agenes relevantes en la colecci\'on\\
-
-Es importante tener en cuenta que cuando la consulta en cuestión es una imagen, la relevancia es extremadamente subjetiva. 
-Mientras mayor sea el recobrado y la precisi\'on , m\'as eficiente ser\'a el algoritmo de recuperaci\'on en cuesti\'on.
-El recobrado refleja la capacidad de recuperaci\'on de im\'agenes relacionadas, mientras que la precisi\'on refleja la
-capacidad de rechazar las im\'agenes no relacionadas.
-Tradicionalmente, los resultados se resumen como curvas de recuperación de precisión o curvas de alcance de precisión. 
-Una critica por la precisión se deriva del hecho de que se calcula para todo el conjunto recuperado y esta no se ve afectada 
-por las clasificaciones respectivas de las entidades relevantes en la lista recuperada. Una medida que aborda el problema 
-anterior y es muy popular en la comunidad de recuperación de imágenes, es la precisión media (AP). En una lista clasificada 
-de entidades recuperadas con respecto a una consulta, si la precisión se calcula en la profundidad de cada entidad relevante 
-obtenida, la precisión promedio se da como la media de toda la precisión individual. Como es obvio, esta métrica está muy 
-influenciada por elementos relevantes de alto rango y no tanto por los que se encuentran al final de la lista recuperada.
-
-% \newpage
-
-\chapter*{Aplicaciones}
-\addcontentsline{toc}{chapter}{Aplicaciones}
-
-
-
-
-
-El campo de la recuperación de imágenes ha demostrado ser uno necesario para los tiempos en que vivimos, donde tantas imágenes 
-se generan diariamente, desde satélites orbitando la Tierra, misiones espaciales en lo más lejos del cosmos, 
-animales en la naturaleza, paisajes, cámaras de seguridad y mucho más. Las imágenes son una fuente de información 
-muy útil en la actualidad, y por tanto almacenarlas y organizarlas es una tarea necesaria, para facilitar 
-el acceso a la información. De ahí que este campo tenga una gran cantidad de aplicaciones en la actualidad, 
-a continuación mencionamos algunas de las más importantes:
-\\\\
-\noindent $\blacksquare$ \textbf{El problema de la anotación automática de imágenes.}\\
-El propósito principal de un sistema de recuperación de imágenes basado en contenido es descubrir imágenes que pertenecen a algún 
-concepto, en la ausencia de meta-datos, todos los intentos de automatizar el proceso de creación de estos meta-datos tiene ese 
-objetivo. La anotación de imágenes puede facilitar la búsqueda de imágenes utilizando texto. Si el mapeo resultante imagen-palabras 
-clave es confiable, la búsqueda de imagen basada en texto puede tener semánticamente más sentido que buscar en la ausencia de texto. 
-Uno de los métodos para resolver este problema de la anotación automática es usar aprendizaje supervisado para categorizar las 
-imágenes. La detección de conceptos simples como: paisaje, ciudad, animales, etc, alcanza una alta precisión.
-\\\\
-\noindent $\blacksquare$El arte y la cultura siempre han sido importantes en la vida del ser humano. A lo largo de la historia, los museos y galerías 
-de arte del mundo se han encargado de preservar nuestra diversa herencia cultural para utilizarlos como fuentes educación y 
-aprendizaje. Es por esto que recientemente se ha expresado la preocupación por digitalizar todos los materiales antiguos, 
-históricos y culturales, para la posteridad. Esto es muy importante por dos razones, primero las computadoras se han convertido 
-en el principal medio de aprendizaje y se supone que así sea durante los próximos años, por tanto la representación digital de 
-los artefactos culturales y las imágenes es algo que facilitará su popularidad, además de que sería accesible desde cualquier 
-rincón del mundo, y segundo al contrario de la información almacenada de forma digital, los artefactos y pinturas antiguas están a 
-merced a la degradación con el paso del tiempo, a los desastres y al vandalismo.
-\\\\
-\noindent $\blacksquare$ Las interacciones entre CBIR y la seguridad de la información ha sido prácticamente nulo, hasta que recientemente ciertas perspectivas 
-han emergido  para unir ambos campos, las pruebas de interacción humana (HIPs por sus siglas en inglés) y el cumplimiento de 
-la protección de los derechos de autor. Mientras por un lado constantemente estamos ampliando las fronteras de la ciencia para 
-diseñar sistemas que pueda imitar las capacidades humanas, no podemos negar los riesgos de seguridad inherentes asociados con 
-programas extremadamente "inteligentes". Uno de dichos riesgos es cuando un sitio web o algún servidor es atacado por programas 
-maliciosos que solicitan servicios a escalas masivas. Pueden ser escritos programas que consuman una gran cantidad de recursos web o 
-que influyan en los resultados de votaciones. En este caso los HIPs también conocidos como CAPTCHAs, son la solución. Estas interfaces 
-están diseñadas para diferenciar entre humanos o programas, basados en la respuesta a algunas preguntas.
-
-\noindent $\blacksquare$ \textbf{Aplicaciones en la medicina} :
-Una apliaci\'on que recupera cortes de 2D MRI(im\'agenes de resonancia magn\'etica)
-de vol\'umenes cerebrales en 3D. La aplicaci\'on aceptar\'ia query de im\'agenens 2D MRI del usuario e identificar\'ia el volumen 3D que coincide
-de acuerdo con la  regi\'on del cerebro relacionada con la query. Los cortes coincidentes se recuperadan mediante una b\'usqueda adicional en los vol\'umenes
-3D coincidentes.
-
-\noindent $\blacksquare$ \textbf{Aplicaciones en el comercio electr\'onico} :
-La compra electr\'onica es la tendencia actual en el mundo m\'as que compras tradicionales debido a la conveniencia de internet. Cuando llega 
-el tiempo de la compra, los usuarios se encuentran con un problema en seleccionar los items que necesitan comprar. Un sistema de recuperaci\'on
-de im\'agenes puede asistir a la decisiones del usuario en ropa y ayudarlo a tener una mejor selecci\'on de ropa durante la compra electr\'onica.
-El m\'etodo usado enriquece la b\'usqueda y recuperaci\'on de productos de informaci\'on usando CBIR con caracter\'isticas como el color o la textura 
-en la aplicaci\'on de la venta minorista de ropa electr\'onica.  
-
-% \newpage
-
-\chapter*{Ventajas y desventajas}
-\addcontentsline{toc}{chapter}{Ventajas y desventajas}
-
-\underline {\bf Keyword Based Image Retrieval}\\
-
-Ventajas:\\
-\noindent$\bullet$ La realizaci\'on de queries mediante texto suele ser m\'as intuitiva y f\'acil para los usuarios.\\
-
-Desventajas:\\
-\noindent$\bullet$ No tiene en cuenta conceptos sem\'anticos.\\
-$\bullet$ Solo usando texto para describir el contenido de una imagen a menudo causa ambig\"{u}edad e insuficiencia en el rendimiento
-de la b\'usqueda de im\'agenes en una base de datos y el procesamiento de las queries de los usuarios.\\
-
-\underline {\bf Content Based Image Retrieval}\\
-
-Ventajas:\\
-\noindent$\bullet $ Las queries se pueden realizar utilizando alguna imagen en algunos casos.\\
-$\bullet $ Se computan las caracter\'isticas de bajo nivel para lograr una mayor precisi\'on a la hora de responder a una 
-query.\\
-
-Desventajas:\\
-\noindent$\bullet$ Los sistemas basados en esta t\'ecnica sufren de lo que se denomina brecha sem\'antica. Es una brecha 
-entre los complejos conceptos sem\'anticos que puede percibir el ser humano, y que las m\'aquinas no son capaces de
-comprender f\'acilmente.\\
-
-\underline {\bf Semantic Based Image Retrieval}\\\\
-
-Ventajas:\\
-\noindent$\bullet$ Es capaz de utilizando herramientas de machine learning lograr una mayor precisi\'on a la hora de representar conceptos sem\'anticos.\\
-
-Desventajas:\\
-$\bullet$ A pesar de que estos sistemas son mucho mejores que los existentes tiempo atr\'as, a\'un no existen mecanismos lo suficientemente potentes.\\
-
-\underline {\bf Ontology Based Image Retrieval}\\\\
-
-Ventajas:\\
-\noindent$\bullet$ Usando la representaci\'on ontol\'ogica  de im\'agenes se puede interpretar las ideas de alto nivel de la mente del usuario.
-
-
-
-Desventajas:\\
 $\bullet$
-Si se define una ontolog\'ia compleja el proceso de anotaci\'on tambi\'en ser\'a complejo. El modelo de dominio ontol\'ogico es tan bueno 
-como la mano experta que decide la ontolog\'ia.
+Este modelo es bastante sencillo de implementar y ofrece notables mejoras respecto al booleano.\\
+\noindent
+$\bullet$
+La estrategia de coincidencia parcial permite la recuperación de documentos que se aproximen a los 
+requerimientos de la consulta. \\
+\noindent
+$\bullet$
+El esquema de ponderación tf-idf para los documentos mejora el 
+rendimiento de la recuperación. \\
+\noindent
+$\bullet$
+La fórmula del coseno ordena los documentos 
+de acuerdo al grado de similitud con la consulta. 
+
+\subsection {Limitaciones que tenemos al usar este modelo:}
+$\bullet$
+Uno de los problemas que tiene es la sensibilidad semántica; los documentos con un contexto similar 
+pero con un vocabulario de términos diferente no se asociarán, lo que resultará en una coincidencia 
+negativa falsa.\\
+\noindent
+$\bullet$
+Teoricamente asume que los términos son estáticamente independientes\\
+\noindent
+$\bullet$
+El orden en que los términos aparecen en el documento se pierde en la representación en el espacio vectorial
+
+\section{Modelo Fuzzy:}
+Se implementó como modelo secundario para tener la opción de elegir si se quería probar con el mismo. 
+
+El modelo fuzzy es una extensión del modelo booleano. En este modelo cada término de la query es 
+definido mediante un conjunto difuso y cada documento tiene un grado de pertenencia a dicho 
+conjunto(valor entre 0 y 1). La idea básica es expandir el conjunto de términos de índice 
+en la consulta con términos relacionados, de modo que la consulta del usuario pueda recuperar 
+documentos relevantes adicionales. Se puede usar un thesaurus para modelar el problema de recuperación 
+de información en términos de conjuntos difusos. Un thesaurus puede ser construido definiendo una 
+matriz de correlación término a término cuyas filas y columnas están asociada a los términos  de la
+colección de documentos. En dicha matriz, un factor de correlación normalizado $c_{i,l}$ entre 
+dos términos $k_{i}$ y $k_{l}$ se define de la siguiente forma:\\
+
+$
+    c_{i,l} =  \frac{n_{i,l}}{n_i+n_l-n_{i,l}}
+$
+\\\\
+\noindent
+Donde $n_i$ es el número de documentos que contienen al término $k_i$, $n_l$ el número de documentos
+que continen al término $k_l$, $n_{i,l}$ el  número de documentos que contienen a ambos términos \\
+Podemos usar la matriz de correlación para definir un conjunto difuso asociado a cada término $k_i$.
+En este conjunto difuso, un documento $d_j$ tiene un grado de pertenencia(grade of membership) $\mu_{i,j}$
+que se define como:\\\\
+$
+\mu_{i,j} = 1 - \prod_{k_ln \in d_j}^{}  (1-c_{i,l}) 
+$
+\\\\
+\noindent
+Un documento $d_j$ pertenece al conjunto difuso asociado al término $k_i$ si sus  términos están relacionados 
+con $k_i$. Siempre que haya un término $k_l$ de $d_j$ que esté fuertemente relacionado($c_{i,l}\sim 1$), 
+entonces $\mu_{i,j} \sim 1$ y el término $k_i$ es un buen fuzzy index para el documento $d_j$. En el caso 
+que todos los documemntos de $d_j$ estén pobremente relacionados con $k_i$, $k_i$ no es un buen fuzzy 
+index para $d_j$($\mu_{i,j}\sim 0 $).\\\\ 
+
+La similitud entre un documento $d_j$ y la query q se se define:
+
+$
+    sim(q,d_j) = 1 - \prod_{i=1}^{N} (1 - \mu_{k_i,d_j})
+$
+
+Donde N es la cantidad de términos de la query.
+
+Entonces te puedes quedar con los documentos ordenados por ranking de relevancia 
+respecto a la query.
+
+Para la implementación de este modelo se definió una clase Fuzzy
+\begin{python}
+class Fuzzy:
+def __init__(self, corpus_term, documents, compute_fuzzy_data_required: bool = False):
+    self.corpus_terms: List['str'] = corpus_term 
+    self.documents: List['Doc'] = documents
+    self.correlation_matrix = {}
+    if compute_fuzzy_data_required:
+        self.compute_fuzzy_data()
+    else:
+        self.deg_memb_matrix = unpick_pickle_file('./preprocessed/deg_memb_matrix.pickle')
+    ...
+\end{python}
+
+Recibe los términos del vocabulario y los documentos asi como el parámetro $compute\_fuzzy\_data\_required$
+que indic si es necesario hacer el preprocesado de calcular la matriz de grado pertenencia o se 
+puede cargar desde un file previamente salvado \textbf{.pickle}\\\\
+\noindent
+\textbf{Implementación hecha en Python para el c\'alculo de la matriz de correlación:}
+\begin{python}
+def correlation_factor(self, ki: str, kl: str):
+    if (ki,kl) in self.correlation_matrix:
+        return self.correlation_matrix[(ki, kl)]
+    if (kl, ki) in self.correlation_matrix:
+        return self.correlation_matrix[(kl, ki)]
+    n_i = 0  
+    n_l = 0
+    n_i_l = 0 
+    for doc in self.documents:
+        if ki in doc.terms:
+            n_i+=1
+        if kl in doc.terms:
+            n_l+=1
+        if ki in doc.terms and kl in doc.terms:
+            n_i_l +=1
+    result = n_i_l/(n_i + n_l - n_i_l) # ci,l
+    self.correlation_matrix[(ki, kl)] = result
+    return result
+...
+\end{python}
+\textbf{Implementación hecha en Python para el c\'alculo del grado de pertenencia 
+de un documento dj al conjunto difuso de un término ki:}\\
+\begin{python}
+    def degree_of_membership(self, ki, dj): 
+        if (ki, dj) in self.deg_memb_matrix:
+            return self.deg_memb_matrix[(ki, dj)]
+        result = 1
+        for term in self.documents[dj].terms:
+            result *= 1- self.correlation_factor(ki, term)
+        result = 1 - result
+        return result
+    ...
+\end{python}
+
+\noindent
+\textbf{Implementación hecha en Python para el cálculo de la similitud 
+entre la query y un documento:}\\
+
+\begin{python}
+    def sim(self, q, dj): 
+        result = 1
+
+        for t in q:
+            result *= 1 - self.deg_memb_matrix[(t, dj)]
+
+        result = 1- result
+        return result
+    ...
+\end{python}
+
+
+Para obtener los documentos más relevantes se va por cada documento se calcula 
+la similitud de cada uno con la query como se explicó anteriormente y al 
+final se hace un ranking por relevancia bastante similar a como es con el vectorial.
+También se puede considerar un umbral de similitud y quedarte solamente con los resultados
+por encima de dicho umbral.
+
+\section{Evaluación del Modelo Vectorial:}
+
+
+\section{Interfaz gráfica y como puede buscar las consultas el usuario:}
+
+La interfaz gráfica se desarrollócon \textbf{streamlit} una biblioteca bastante cómoda para 
+crear aplicaciones de interfaz web desde Python. En el file $UI\_streamlit.py$ 
+está el código de la parte gráfico del sistema de recuperación de información 
+desarrollado.
+
+
+
+
+% El campo de la recuperación de imágenes ha demostrado ser uno necesario para los tiempos en que vivimos, donde tantas imágenes 
+% se generan diariamente, desde satélites orbitando la Tierra, misiones espaciales en lo más lejos del cosmos, 
+% animales en la naturaleza, paisajes, cámaras de seguridad y mucho más. Las imágenes son una fuente de información 
+% muy útil en la actualidad, y por tanto almacenarlas y organizarlas es una tarea necesaria, para facilitar 
+% el acceso a la información. De ahí que este campo tenga una gran cantidad de aplicaciones en la actualidad, 
+% a continuación mencionamos algunas de las más importantes:
+% \\\\
+% \noindent $\blacksquare$ \textbf{El problema de la anotación automática de imágenes.}\\
+% El propósito principal de un sistema de recuperación de imágenes basado en contenido es descubrir imágenes que pertenecen a algún 
+% concepto, en la ausencia de meta-datos, todos los intentos de automatizar el proceso de creación de estos meta-datos tiene ese 
+% objetivo. La anotación de imágenes puede facilitar la búsqueda de imágenes utilizando texto. Si el mapeo resultante imagen-palabras 
+% clave es confiable, la búsqueda de imagen basada en texto puede tener semánticamente más sentido que buscar en la ausencia de texto. 
+% Uno de los métodos para resolver este problema de la anotación automática es usar aprendizaje supervisado para categorizar las 
+% imágenes. La detección de conceptos simples como: paisaje, ciudad, animales, etc, alcanza una alta precisión.
+% \\\\
+% \noindent $\blacksquare$El arte y la cultura siempre han sido importantes en la vida del ser humano. A lo largo de la historia, los museos y galerías 
+% de arte del mundo se han encargado de preservar nuestra diversa herencia cultural para utilizarlos como fuentes educación y 
+% aprendizaje. Es por esto que recientemente se ha expresado la preocupación por digitalizar todos los materiales antiguos, 
+% históricos y culturales, para la posteridad. Esto es muy importante por dos razones, primero las computadoras se han convertido 
+% en el principal medio de aprendizaje y se supone que así sea durante los próximos años, por tanto la representación digital de 
+% los artefactos culturales y las imágenes es algo que facilitará su popularidad, además de que sería accesible desde cualquier 
+% rincón del mundo, y segundo al contrario de la información almacenada de forma digital, los artefactos y pinturas antiguas están a 
+% merced a la degradación con el paso del tiempo, a los desastres y al vandalismo.
+% \\\\
+% \noindent $\blacksquare$ Las interacciones entre CBIR y la seguridad de la información ha sido prácticamente nulo, hasta que recientemente ciertas perspectivas 
+% han emergido  para unir ambos campos, las pruebas de interacción humana (HIPs por sus siglas en inglés) y el cumplimiento de 
+% la protección de los derechos de autor. Mientras por un lado constantemente estamos ampliando las fronteras de la ciencia para 
+% diseñar sistemas que pueda imitar las capacidades humanas, no podemos negar los riesgos de seguridad inherentes asociados con 
+% programas extremadamente "inteligentes". Uno de dichos riesgos es cuando un sitio web o algún servidor es atacado por programas 
+% maliciosos que solicitan servicios a escalas masivas. Pueden ser escritos programas que consuman una gran cantidad de recursos web o 
+% que influyan en los resultados de votaciones. En este caso los HIPs también conocidos como CAPTCHAs, son la solución. Estas interfaces 
+% están diseñadas para diferenciar entre humanos o programas, basados en la respuesta a algunas preguntas.
+
+% \noindent $\blacksquare$ \textbf{Aplicaciones en la medicina} :
+% Una apliaci\'on que recupera cortes de 2D MRI(im\'agenes de resonancia magn\'etica)
+% de vol\'umenes cerebrales en 3D. La aplicaci\'on aceptar\'ia query de im\'agenens 2D MRI del usuario e identificar\'ia el volumen 3D que coincide
+% de acuerdo con la  regi\'on del cerebro relacionada con la query. Los cortes coincidentes se recuperadan mediante una b\'usqueda adicional en los vol\'umenes
+% 3D coincidentes.
+
+% \noindent $\blacksquare$ \textbf{Aplicaciones en el comercio electr\'onico} :
+% La compra electr\'onica es la tendencia actual en el mundo m\'as que compras tradicionales debido a la conveniencia de internet. Cuando llega 
+% el tiempo de la compra, los usuarios se encuentran con un problema en seleccionar los items que necesitan comprar. Un sistema de recuperaci\'on
+% de im\'agenes puede asistir a la decisiones del usuario en ropa y ayudarlo a tener una mejor selecci\'on de ropa durante la compra electr\'onica.
+% El m\'etodo usado enriquece la b\'usqueda y recuperaci\'on de productos de informaci\'on usando CBIR con caracter\'isticas como el color o la textura 
+% en la aplicaci\'on de la venta minorista de ropa electr\'onica.  
+
+% % \newpage
+
+% \chapter*{Ventajas y desventajas}
+% \addcontentsline{toc}{chapter}{Ventajas y desventajas}
+
+% \underline {\bf Keyword Based Image Retrieval}\\
+
+% Ventajas:\\
+% \noindent$\bullet$ La realizaci\'on de queries mediante texto suele ser m\'as intuitiva y f\'acil para los usuarios.\\
+
+% Desventajas:\\
+% \noindent$\bullet$ No tiene en cuenta conceptos sem\'anticos.\\
+% $\bullet$ Solo usando texto para describir el contenido de una imagen a menudo causa ambig\"{u}edad e insuficiencia en el rendimiento
+% de la b\'usqueda de im\'agenes en una base de datos y el procesamiento de las queries de los usuarios.\\
+
+% \underline {\bf Content Based Image Retrieval}\\
+
+% Ventajas:\\
+% \noindent$\bullet $ Las queries se pueden realizar utilizando alguna imagen en algunos casos.\\
+% $\bullet $ Se computan las caracter\'isticas de bajo nivel para lograr una mayor precisi\'on a la hora de responder a una 
+% query.\\
+
+% Desventajas:\\
+% \noindent$\bullet$ Los sistemas basados en esta t\'ecnica sufren de lo que se denomina brecha sem\'antica. Es una brecha 
+% entre los complejos conceptos sem\'anticos que puede percibir el ser humano, y que las m\'aquinas no son capaces de
+% comprender f\'acilmente.\\
+
+% \underline {\bf Semantic Based Image Retrieval}\\\\
+
+% Ventajas:\\
+% \noindent$\bullet$ Es capaz de utilizando herramientas de machine learning lograr una mayor precisi\'on a la hora de representar conceptos sem\'anticos.\\
+
+% Desventajas:\\
+% $\bullet$ A pesar de que estos sistemas son mucho mejores que los existentes tiempo atr\'as, a\'un no existen mecanismos lo suficientemente potentes.\\
+
+% \underline {\bf Ontology Based Image Retrieval}\\\\
+
+% Ventajas:\\
+% \noindent$\bullet$ Usando la representaci\'on ontol\'ogica  de im\'agenes se puede interpretar las ideas de alto nivel de la mente del usuario.
+
+
+
+% Desventajas:\\
+% $\bullet$
+% Si se define una ontolog\'ia compleja el proceso de anotaci\'on tambi\'en ser\'a complejo. El modelo de dominio ontol\'ogico es tan bueno 
+% como la mano experta que decide la ontolog\'ia.
 
 \newpage
 

@@ -185,12 +185,10 @@ INPUT ./images/stemming1png.png
 INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/./images/stemming2png.png
 INPUT ./images/stemming2png.png
 INPUT ./images/stemming2png.png
-INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/./images/visual_idea_ontology.png
-INPUT ./images/visual_idea_ontology.png
-INPUT ./images/visual_idea_ontology.png
-INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/./images/ontolgy-bases-image-retrieval-process.png
-INPUT ./images/ontolgy-bases-image-retrieval-process.png
-INPUT ./images/ontolgy-bases-image-retrieval-process.png
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmsltt10.tfm
+INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/InformePFSRI/./images/ejemplosim.png
+INPUT ./images/ejemplosim.png
+INPUT ./images/ejemplosim.png
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr6.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmmi9.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmmi6.tfm
@@ -208,10 +206,17 @@ INPUT /home/dquesada/Documents/Proyectos/Proyecto Final SRI/InformedeEntrega/Inf
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb
+INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb
+INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex7.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
+INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb
+INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb
+INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb
+INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb
+INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsltt10.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb
+INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb
-INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb

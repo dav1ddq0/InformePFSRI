@@ -1,18 +1,13 @@
 \BOOKMARK [0][-]{chapter.1}{Dise\361o, implementaci\363n, evaluaci\363n y a\361\341lisis de un Sistem de Recuperaci\363n de Informaci\363n}{}% 1
 \BOOKMARK [0][-]{chapter*.3}{Dise\361o}{}% 2
 \BOOKMARK [0][-]{chapter*.4}{Herramientas usadas para el el desarrollo del sistema}{}% 3
-\BOOKMARK [0][-]{chapter*.5}{Principales m\351todos para la recuperaci\363n de im\341genes}{}% 4
+\BOOKMARK [0][-]{chapter*.5}{Proceso para la creaci\363n de un sistema de recuperaci\363n de informaci\363n}{}% 4
 \BOOKMARK [1][-]{section.1.1}{Preprocesamiento del texto:}{chapter*.5}% 5
-\BOOKMARK [2][-]{subsection.1.1.1}{Text Based Image Retrieval:}{section.1.1}% 6
-\BOOKMARK [2][-]{subsection.1.1.2}{Field Based Image Retrieval:}{section.1.1}% 7
-\BOOKMARK [2][-]{subsection.1.1.3}{Structure Based Image Retrieval:}{section.1.1}% 8
-\BOOKMARK [1][-]{section.1.2}{Content Based Image Retrieval\(CBIR\):}{chapter*.5}% 9
-\BOOKMARK [2][-]{subsection.1.2.1}{Low-Level Image Feature:}{section.1.2}% 10
-\BOOKMARK [2][-]{subsection.1.2.2}{ Image Segmentation}{section.1.2}% 11
-\BOOKMARK [2][-]{subsection.1.2.3}{ Varias caracter\355sticas de bajo nivel de las im\341genes:}{section.1.2}% 12
-\BOOKMARK [1][-]{section.1.3}{Semantic Based Image Retrieval:}{chapter*.5}% 13
-\BOOKMARK [1][-]{section.1.4}{Ontology Based Image Retrieval:}{chapter*.5}% 14
-\BOOKMARK [0][-]{chapter*.7}{Evaluaci\363n del sistema}{}% 15
-\BOOKMARK [0][-]{chapter*.8}{Aplicaciones}{}% 16
-\BOOKMARK [0][-]{chapter*.9}{Ventajas y desventajas}{}% 17
-\BOOKMARK [0][-]{chapter*.10}{References}{}% 18
+\BOOKMARK [1][-]{section.1.2}{Tokenizaci\363n de los documentos del sistema y creaci\363n del vocabulario de las palabras:}{chapter*.5}% 6
+\BOOKMARK [1][-]{section.1.3}{Modelo vectorial:}{chapter*.5}% 7
+\BOOKMARK [2][-]{subsection.1.3.1}{Razones por la que se escogi\363 este modelo como el modelo principal del sistema:}{section.1.3}% 8
+\BOOKMARK [2][-]{subsection.1.3.2}{Limitaciones que tenemos al usar este modelo:}{section.1.3}% 9
+\BOOKMARK [1][-]{section.1.4}{Modelo Fuzzy:}{chapter*.5}% 10
+\BOOKMARK [1][-]{section.1.5}{Evaluaci\363n del Modelo Vectorial:}{chapter*.5}% 11
+\BOOKMARK [1][-]{section.1.6}{Interfaz gr\341fica y como puede buscar las consultas el usuario:}{chapter*.5}% 12
+\BOOKMARK [0][-]{chapter*.6}{References}{}% 13
